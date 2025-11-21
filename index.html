@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-
 <html>
 <body>
 
@@ -19,8 +18,10 @@
     <p>This is a paragraph inside a div.</p>
 </div>
 
-<script>
 
+<script src="js/databasesInteraction.js"></script>
+
+<script>
 $("body").on("click", '[name="test-me"]', function() {
     $("[data-div='test-div']").show();
 });
@@ -47,7 +48,6 @@ $("body").on("click", '[name="test-db"]', async function (){
         console.error("Error:", err);
     }
 });
-
 </script>
 </body>
 </html>
