@@ -1,0 +1,27 @@
+<!DOCTYPE html lang="ca">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<html>
+<body>
+
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+
+
+<button type="button" name="test-me">test-me</button>
+
+
+<div data-div="test-div" style="display: none">
+    <p>This is a paragraph inside a div.</p>
+</div>
+
+<script>
+
+$("body").on("click", "[test-me]", function() {
+    $("[data-div='test-div']").show();
+});
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</body>
+</html>
