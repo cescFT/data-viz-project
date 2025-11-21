@@ -1,5 +1,8 @@
 <!DOCTYPE html lang="ca">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+
 <html>
 <body>
 
@@ -9,6 +12,8 @@
 
 <button type="button" name="test-me">test-me</button>
 
+<button type="button" name="test-db">TestDB</button>
+
 
 <div data-div="test-div" style="display: none">
     <p>This is a paragraph inside a div.</p>
@@ -16,12 +21,33 @@
 
 <script>
 
-$("body").on("click", "[test-me]", function() {
+$("body").on("click", '[name="test-me"]', function() {
     $("[data-div='test-div']").show();
 });
 
-</script>
+$("body").on("click", '[name="test-db"]', async function (){
+    try {
+        // Carrega la BD
+        const db = await loadSQLiteDatabase("ive_cat.sqlite");
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        // Fes una consulta (exemple genèric)
+        const rows = runQuery(db, `
+            SELECT *
+            FROM ive_cat
+            LIMIT 10;
+        `);
+
+        console.log("Resultats:", rows);
+
+        // Aquí pots fer:
+        // - updateMap(rows)
+        // - updateChart(rows)
+        // - omplir formularis
+    } catch (err) {
+        console.error("Error:", err);
+    }
+});
+
+</script>
 </body>
 </html>
