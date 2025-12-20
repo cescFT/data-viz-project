@@ -90,9 +90,8 @@ function treemapMethodTypeIVE() {
                 .attr("pointer-events", "none");
 
 
-            svg.closest("div").find(".fa-spinner").remove();
-            // Show SVG after rendering
-            svg.style("display", "block");
+            $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
+            $("#treemapMethodTypeIVE").show();
 
         })
         .catch(error => console.error('Failed to fetch data:', error));
