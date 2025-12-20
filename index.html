@@ -6,6 +6,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <html>
+    <head> 
+        <meta charset="UTF-8">
+        <title>Estudi IVE Catalunya</title>
+    </head>
 <body>
     <header class="container-fluid bg-light border-bottom mb-4">
     <div class="row align-items-center py-3">
@@ -37,8 +41,8 @@
         </div>
         
         <div>
-            <div class="text-center" style="position: relative">
-                <h3 class="text-center">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
+             <h3 class="text-center">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
+            <div class="text-center position-relative">
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="treemapMethodTypeIVE" width="900" height="600" style="display: none;"></svg>
                 <div id="treemapTooltip" style="
@@ -50,9 +54,10 @@
                     font-size: 12px;
                     pointer-events: none;
                     opacity: 0;
-                    "> 
-                </div>
+                    z-index: 9999;
+                "></div>
             </div>
+
         </div>
         
 
