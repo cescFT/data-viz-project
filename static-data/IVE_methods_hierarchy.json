@@ -1,0 +1,26 @@
+{
+    "Comement": "Dades obtingudes de consultar els tipus de mètodes utilitzats en els procediments d'IVE a Catalunya.",
+    "Types": {
+        "Mètodes quirúrgics": [
+            {"name": "Quirúrgic no especificat", "count": 49305},
+            {"name": "Dilatació i aspiració", "count": 6540},
+            {"name": "Dilatació i evacuació", "count": 1101},
+            {"name": "Dilatació i raspament úter", "count": 53},
+            {"name": "Histerectomia", "count": 1},
+            {"name": "Fracàs TF + dilatació + aspiració / evacuació / raspament", "count": 136}
+        ],
+        "Mètodes farmacològics": [
+            {"name": "Farmacològic no especificat", "count": 27298},
+            {"name": "Mifepristona+Misprostol", "count": 8052},
+            {"name": "Mifepristona", "count": 107},
+            {"name": "Misoprostol", "count": 83},
+            {"name": "Prostaglandines", "count": 29},
+            {"name": "Injecció intrauterina", "count": 15},
+            {"name": "Injecció intravenosa", "count": 2}
+        ],
+        "No especificat": [
+            {"name": "No hi consta", "count": 54},
+            {"name": "Altres", "count": 48}
+        ]
+    }
+}
