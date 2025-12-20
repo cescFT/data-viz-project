@@ -1,4 +1,4 @@
-async function totalsIVECatBarchartPerYearIVEPerYear(){
+async function totalsIVECatBarchartPerYearIVEPerYear() {
     try {
         // Carrega la BD
         const db = await loadSQLiteDatabase("ive_cat.sqlite");
@@ -6,15 +6,15 @@ async function totalsIVECatBarchartPerYearIVEPerYear(){
         const rows = runQuery(db, `
             SELECT count(*) as total, any
             FROM ive_cat
-            group by any
-            order by any
+            GROUP BY any
+            ORDER BY any
         `);
 
         console.log("Resultats:", rows);
 
         const margin = { top: 30, right: 30, bottom: 50, left: 70 },
-        width = 900 - margin.left - margin.right,
-        height = 450 - margin.top - margin.bottom;
+              width = 900 - margin.left - margin.right,
+              height = 450 - margin.top - margin.bottom;
 
         // SVG
         const svg = d3.select("#totalsIVECatBarchartPerYear")
@@ -51,6 +51,19 @@ async function totalsIVECatBarchartPerYearIVEPerYear(){
             .attr("height", d => height - y(d.total))
             .attr("fill", "#5B8FF9");
 
+        // ===== ETIQUETES DE VALOR =====
+        svg.selectAll(".bar-label")
+            .data(rows)
+            .enter()
+            .append("text")
+            .attr("class", "bar-label")
+            .attr("x", d => x(d.any) + x.bandwidth() / 2)
+            .attr("y", d => y(d.total) - 5)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "11px")
+            .attr("fill", "#333")
+            .text(d => d.total.toLocaleString());
+
         // Etiqueta eix Y
         svg.append("text")
             .attr("transform", "rotate(-90)")
@@ -66,9 +79,14 @@ async function totalsIVECatBarchartPerYearIVEPerYear(){
             .attr("text-anchor", "middle")
             .text("Any");
 
+        // Spinner off
+        $("#totalsIVECatBarchartPerYear")
+            .closest("div")
+            .find("i.fa-spinner")
+            .remove();
 
-        $("#totalsIVECatBarchartPerYear").closest("div").find("i.fa-spinner").remove();
         $("#totalsIVECatBarchartPerYear").show();
+
     } catch (err) {
         console.error("Error:", err);
     }
