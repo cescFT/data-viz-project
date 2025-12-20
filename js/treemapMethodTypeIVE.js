@@ -1,5 +1,5 @@
 function treemapMethodTypeIVE() {
-    fetch('../static-data/IVE_methods_hierarchy.json')
+    fetch('static-data/IVE_methods_hierarchy.json')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
