@@ -60,24 +60,27 @@ function treemapMethodTypeIVE() {
                         .attr("stroke-width", 2);
 
                     tooltip
+                        .style("display", "block")
                         .style("opacity", 1)
                         .html(`
-                          <strong>${d.data.name}</strong><br/>
-                          Tipus: ${d.parent.data.name}<br/>
-                          Casos: ${d.value.toLocaleString()}
+                            <strong>${d.data.name}</strong><br/>
+                            Tipus: ${d.parent.data.name}<br/>
+                            Casos: ${d.value.toLocaleString()}
                         `);
                 })
                 .on("mousemove", function (event) {
                     tooltip
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY + 10) + "px");
+                        .style("left", (event.offsetX + 15) + "px")
+                        .style("top", (event.offsetY + 15) + "px");
                 })
                 .on("mouseout", function () {
                     d3.select(this)
                         .attr("stroke", "#fff")
                         .attr("stroke-width", 1);
 
-                    tooltip.style("opacity", 0);
+                    tooltip
+                        .style("opacity", 0)
+                        .style("display", "none");
                 });
 
             // TEXT
@@ -91,7 +94,6 @@ function treemapMethodTypeIVE() {
 
 
             $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
-            $("#treemapMethodTypeIVE").css("position", "absolute");
             $("#treemapMethodTypeIVE").show();
 
         })
