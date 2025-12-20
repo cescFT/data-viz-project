@@ -51,6 +51,7 @@ async function totalsIVECatBarchartPerYearIVEPerYear() {
             .attr("height", d => height - y(d.total))
             .attr("fill", "#5B8FF9");
 
+            
         // ===== ETIQUETES DE VALOR =====
         svg.selectAll(".bar-label")
             .data(rows)
