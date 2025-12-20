@@ -91,6 +91,7 @@ function treemapMethodTypeIVE() {
 
 
             $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
+            $("#treemapMethodTypeIVE").css("position", "absolute");
             $("#treemapMethodTypeIVE").show();
 
         })
