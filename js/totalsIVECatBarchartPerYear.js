@@ -10,8 +10,6 @@ async function totalsIVECatBarchartPerYearIVEPerYear() {
             ORDER BY any
         `);
 
-        console.log("Resultats:", rows);
-
         const margin = { top: 30, right: 30, bottom: 50, left: 70 },
               width = 900 - margin.left - margin.right,
               height = 450 - margin.top - margin.bottom;
