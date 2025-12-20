@@ -26,21 +26,30 @@
 
     <div class="container">
         <div>
-            <h3 class="text-center">Total d'IVE per categoria i any</h3>
-            <i class="fa fa-spinner fa-spin"></i>
-            <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
+            <div class="text-center">
+                <h3 class="text-center">Interrupcions voluntàries d'embarassos per any</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
+            </div>
+            Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Es pot observar clarament un increment
+            de l'ús d'aquest dret. El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022, any en què
+            s'acaben les dades.
         </div>
+        
+        <h3></h3>
 
     </div>
 
 
 <script src="js/databasesInteraction.js"></script>
 <script src="js/totalsIVECatBarchartPerYear.js"></script>
+<script src="js/treemapMethodTypeIVE.js"></script>
 
 <script>
 
     $(document).ready(function(){
         totalsIVECatBarchartPerYearIVEPerYear();
+        treemapMethodTypeIVE();
     });
 
 </script>
