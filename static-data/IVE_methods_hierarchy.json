@@ -22,5 +22,10 @@
             {"name": "No hi consta", "count": 54},
             {"name": "Altres", "count": 48}
         ]
-    }
+    },
+    "LegendData": [
+    { "label": "Mètodes quirúrgics", "color": "#5B8FF9" },
+    { "label": "Mètodes farmacològics", "color": "#5AD8A6" },
+    { "label": "No especificat", "color": "#F6BD16" }
+]
 }

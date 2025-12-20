@@ -18,22 +18,51 @@ function treemapMethodTypeIVE() {
             };
 
             const width = 900;
+            const legendHeight = 40;
             const height = 500;
 
             const svg = d3.select("#treemapMethodTypeIVE")
                 .attr("width", width)
                 .attr("height", height);
 
+            
             svg.selectAll("*").remove();
+
+            const legend = svg.append("g")
+                .attr("class", "legend")
+                .attr("transform", "translate(20,10)");
+
+            const legendItem = legend.selectAll(".legend-item")
+                .data(data.LegendData)
+                .enter()
+                .append("g")
+                .attr("class", "legend-item")
+                .attr("transform", (d, i) => `translate(${i * 250}, 0)`);
+
+            legendItem.append("rect")
+                .attr("width", 14)
+                .attr("height", 14)
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .attr("fill", d => d.color);
+
+            legendItem.append("text")
+                .attr("x", 22)
+                .attr("y", 12)
+                .text(d => d.label)
+                .attr("font-size", "13px")
+                .attr("fill", "#333");
+
 
             const root = d3.hierarchy(hierarchyData)
                 .sum(d => d.value)
                 .sort((a, b) => b.value - a.value);
 
             d3.treemap()
-                .size([width, height])
+                .size([width, height - legendHeight])
                 .padding(2)
                 (root);
+
 
             const tooltip = d3.select("#treemapTooltip");
 
@@ -41,7 +70,7 @@ function treemapMethodTypeIVE() {
                 .data(root.leaves())
                 .enter()
                 .append("g")
-                .attr("transform", d => `translate(${d.x0},${d.y0})`);
+                .attr("transform", d => `translate(${d.x0},${d.y0 + legendHeight})`);
 
             // RECTANGLES
             nodes.append("rect")
