@@ -11,68 +11,42 @@ async function sunburstDiagramNationalityStudy() {
             GROUP BY primera_nacionalitat;
         `);
 
-        const unemployed = runQuery(db, `
-            SELECT count(*) as total, primera_nacionalitat
+        const detailed = runQuery(db, `
+            SELECT count(*) as total, primera_nacionalitat, situacio_laboral
             FROM ive_cat
-            WHERE situacio_laboral = 'Aturada o a la recerca de la primera feina remunerada'
-              AND ingressos = 'No'
-            GROUP BY primera_nacionalitat;
-        `);
-
-        const employed = runQuery(db, `
-            SELECT count(*) as total, primera_nacionalitat
-            FROM ive_cat
-            WHERE situacio_laboral = 'Treballadora'
-              AND ingressos = 'Sí'
-            GROUP BY primera_nacionalitat;
+            GROUP BY primera_nacionalitat, situacio_laboral;
         `);
 
         /* ---------------------------
-           Mapes auxiliars
+           Mapes per jerarquia
         --------------------------- */
-        const unemployedMap = {};
-        unemployed.forEach(d => unemployedMap[d.primera_nacionalitat] = d.total);
-
-        const employedMap = {};
-        employed.forEach(d => employedMap[d.primera_nacionalitat] = d.total);
+        const detailedMap = {};
+        detailed.forEach(d => {
+            if (!detailedMap[d.primera_nacionalitat]) detailedMap[d.primera_nacionalitat] = [];
+            detailedMap[d.primera_nacionalitat].push({
+                name: d.situacio_laboral,
+                value: d.total
+            });
+        });
 
         /* ---------------------------
            Jerarquia
         --------------------------- */
         const hierarchyData = {
             name: "IVE Catalunya",
-            children: totals.map(d => {
-                const total = d.total;
-                const u = unemployedMap[d.primera_nacionalitat] || 0;
-                const e = employedMap[d.primera_nacionalitat] || 0;
-
-                return {
-                    name: d.primera_nacionalitat,
-                    children: [
-                        {
-                            name: "Aturada",
-                            value: u,
-                            percent: total ? (u / total) * 100 : 0
-                        },
-                        {
-                            name: "Treballadora",
-                            value: e,
-                            percent: total ? (e / total) * 100 : 0
-                        }
-                    ]
-                };
-            })
+            children: totals.map(d => ({
+                name: d.primera_nacionalitat,
+                total: d.total,
+                children: detailedMap[d.primera_nacionalitat] || []
+            }))
         };
 
         /* ---------------------------
-           Dimensions
+           Dimensions i colors
         --------------------------- */
         const width = 650;
         const radius = width / 2;
 
-        /* ---------------------------
-           Colors (per nacionalitat)
-        --------------------------- */
         const colorScale = {
             "Espanyola": { base: "#5B8FF9", light: "#8CB3FF" },
             "No Espanyola": { base: "#F6BD16", light: "#FFD666" }
@@ -113,55 +87,43 @@ async function sunburstDiagramNationalityStudy() {
             .append("path")
             .attr("d", arc)
             .attr("fill", d => {
-                const nat = d.ancestors().find(a => a.depth === 1).data.name;
-                return d.depth === 1
-                    ? colorScale[nat].base
-                    : colorScale[nat].light;
+                if (d.depth === 1) return colorScale[d.data.name].base;
+                if (d.depth === 2) {
+                    const natNode = d.ancestors().find(a => a.depth === 1);
+                    return colorScale[natNode.data.name].light;
+                }
+                return "#ccc";
             })
             .attr("stroke", "#fff");
 
         /* ---------------------------
-           Text + percentatge (anella 2)
+           Text interior (nacionalitat + percentatge)
         --------------------------- */
-        g.selectAll("text.label")
-            .data(root.descendants().filter(d => d.depth === 2))
+        g.selectAll("text.inner")
+            .data(root.descendants().filter(d => d.depth === 1))
             .enter()
             .append("text")
-            .attr("class", "label")
+            .attr("class", "inner")
             .attr("transform", d => {
                 const angle = (d.x0 + d.x1) / 2 * 180 / Math.PI;
                 const r = (d.y0 + d.y1) / 2;
-                return `
-                    rotate(${angle - 90})
-                    translate(${r},0)
-                    rotate(${angle < 180 ? 0 : 180})
-                `;
+                return `rotate(${angle - 90}) translate(${r},0) rotate(${angle < 180 ? 0 : 180})`;
             })
             .attr("text-anchor", "middle")
-            .attr("font-size", "10px")
+            .attr("dy", "0.35em")
+            .attr("font-size", "12px")
             .attr("fill", "#000")
-            .each(function (d) {
-                const t = d3.select(this);
-
-                t.append("tspan")
-                    .attr("x", 0)
-                    .attr("dy", "-0.4em")
-                    .text(d.data.name);
-
-                t.append("tspan")
-                    .attr("x", 0)
-                    .attr("dy", "1.1em")
-                    .attr("font-weight", "bold")
-                    .text(`${d.data.percent.toFixed(1)}%`);
+            .text(d => {
+                const percent = ((d.value / root.value) * 100).toFixed(1);
+                return `${d.data.name} (${percent}%)`;
             });
 
         /* ---------------------------
-           Llegenda (coherent amb el gràfic)
+           Llegenda
         --------------------------- */
         const legendData = [
-            { label: "Espanyola", color: "#5B8FF9" },
-            { label: "No Espanyola", color: "#F6BD16" },
-            { label: "To clar = situació laboral", color: "#FFFFFF", stroke: "#000" }
+            { label: "Espanyola", color: colorScale["Espanyola"].base },
+            { label: "No Espanyola", color: colorScale["No Espanyola"].base }
         ];
 
         const legend = svg.append("g")
@@ -171,14 +133,13 @@ async function sunburstDiagramNationalityStudy() {
             .data(legendData)
             .enter()
             .append("g")
-            .attr("transform", (d, i) => `translate(0, ${i * 22})`)
+            .attr("transform", (d, i) => `translate(0, ${i * 20})`)
             .each(function (d) {
                 d3.select(this)
                     .append("rect")
                     .attr("width", 14)
                     .attr("height", 14)
-                    .attr("fill", d.color)
-                    .attr("stroke", d.stroke || "none");
+                    .attr("fill", d.color);
 
                 d3.select(this)
                     .append("text")
@@ -188,6 +149,9 @@ async function sunburstDiagramNationalityStudy() {
                     .attr("font-size", "12px");
             });
 
+        /* ---------------------------
+           Mostrar
+        --------------------------- */
         $("#sunburstNationalityStudy").show();
         $("#sunburstNationalityStudy").closest("div").find(".fa-spinner").hide();
 
