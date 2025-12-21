@@ -119,7 +119,30 @@ async function sunburstDiagramNationalityStudy() {
             });
 
         /* ---------------------------
-           Llegenda
+           Text exterior (situació laboral + percentatge)
+        --------------------------- */
+        g.selectAll("text.outer")
+            .data(root.descendants().filter(d => d.depth === 2))
+            .enter()
+            .append("text")
+            .attr("class", "outer")
+            .attr("transform", d => {
+                const angle = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+                const r = (d.y0 + d.y1) / 2;
+                return `rotate(${angle - 90}) translate(${r},0) rotate(${angle < 180 ? 0 : 180})`;
+            })
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("font-size", "11px")
+            .attr("fill", "#000")
+            .text(d => {
+                const parentValue = d.parent.value;
+                const percent = ((d.value / parentValue) * 100).toFixed(1);
+                return `${d.data.name} (${percent}%)`;
+            });
+
+        /* ---------------------------
+           Llegenda (només nacionalitats)
         --------------------------- */
         const legendData = [
             { label: "Espanyola", color: colorScale["Espanyola"].base },
