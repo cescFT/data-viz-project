@@ -138,7 +138,12 @@ async function sunburstDiagramNationalityStudy() {
             .text(d => {
                 const parentValue = d.parent.value;
                 const percent = ((d.value / parentValue) * 100).toFixed(1);
-                return `${d.data.name} (${percent}%)`;
+                let nameOfLabourStatement = d.data.name;
+                if (nameOfLabourStatement === "Aturada o a la recerca de la primera feina remunerada") {
+                    nameOfLabourStatement = "Aturada";
+                }
+
+                return `${nameOfLabourStatement} (${percent}%)`;
             });
 
         /* ---------------------------
