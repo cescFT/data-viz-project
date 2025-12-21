@@ -50,14 +50,14 @@ async function sunburstDiagramNationalityStudy() {
                     name: d.primera_nacionalitat,
                     children: [
                         {
-                            name: "Aturada / Sense ingressos",
+                            name: "Aturada",
                             value: u,
-                            percent: (u / total) * 100
+                            percent: total ? (u / total) * 100 : 0
                         },
                         {
-                            name: "Treballadora / Amb ingressos",
+                            name: "Treballadora",
                             value: e,
-                            percent: (e / total) * 100
+                            percent: total ? (e / total) * 100 : 0
                         }
                     ]
                 };
@@ -71,17 +71,11 @@ async function sunburstDiagramNationalityStudy() {
         const radius = width / 2;
 
         /* ---------------------------
-           Colors per nacionalitat
+           Colors (per nacionalitat)
         --------------------------- */
         const colorScale = {
-            "Espanyola": {
-                base: "#5B8FF9",
-                light: "#8CB3FF"
-            },
-            "No Espanyola": {
-                base: "#F6BD16",
-                light: "#FFD666"
-            }
+            "Espanyola": { base: "#5B8FF9", light: "#8CB3FF" },
+            "No Espanyola": { base: "#F6BD16", light: "#FFD666" }
         };
 
         const svg = d3.select("#sunburstNationalityStudy");
@@ -119,8 +113,7 @@ async function sunburstDiagramNationalityStudy() {
             .append("path")
             .attr("d", arc)
             .attr("fill", d => {
-                const natNode = d.ancestors().find(a => a.depth === 1);
-                const nat = natNode.data.name;
+                const nat = d.ancestors().find(a => a.depth === 1).data.name;
                 return d.depth === 1
                     ? colorScale[nat].base
                     : colorScale[nat].light;
@@ -128,13 +121,13 @@ async function sunburstDiagramNationalityStudy() {
             .attr("stroke", "#fff");
 
         /* ---------------------------
-           Percentatges (anella 2)
+           Text + percentatge (anella 2)
         --------------------------- */
-        g.selectAll("text.percent")
+        g.selectAll("text.label")
             .data(root.descendants().filter(d => d.depth === 2))
             .enter()
             .append("text")
-            .attr("class", "percent")
+            .attr("class", "label")
             .attr("transform", d => {
                 const angle = (d.x0 + d.x1) / 2 * 180 / Math.PI;
                 const r = (d.y0 + d.y1) / 2;
@@ -144,20 +137,31 @@ async function sunburstDiagramNationalityStudy() {
                     rotate(${angle < 180 ? 0 : 180})
                 `;
             })
-            .attr("dy", "0.35em")
             .attr("text-anchor", "middle")
-            .attr("font-size", "11px")
+            .attr("font-size", "10px")
             .attr("fill", "#000")
-            .text(d => `${d.data.percent.toFixed(1)}%`);
+            .each(function (d) {
+                const t = d3.select(this);
+
+                t.append("tspan")
+                    .attr("x", 0)
+                    .attr("dy", "-0.4em")
+                    .text(d.data.name);
+
+                t.append("tspan")
+                    .attr("x", 0)
+                    .attr("dy", "1.1em")
+                    .attr("font-weight", "bold")
+                    .text(`${d.data.percent.toFixed(1)}%`);
+            });
 
         /* ---------------------------
-           Llegenda
+           Llegenda (coherent amb el gràfic)
         --------------------------- */
         const legendData = [
             { label: "Espanyola", color: "#5B8FF9" },
-            { label: "No espanyola", color: "#F6BD16" },
-            { label: "Aturada / Sense ingressos", color: "#999" },
-            { label: "Treballadora / Amb ingressos", color: "#666" }
+            { label: "No Espanyola", color: "#F6BD16" },
+            { label: "To clar = situació laboral", color: "#FFFFFF", stroke: "#000" }
         ];
 
         const legend = svg.append("g")
@@ -167,13 +171,14 @@ async function sunburstDiagramNationalityStudy() {
             .data(legendData)
             .enter()
             .append("g")
-            .attr("transform", (d, i) => `translate(0, ${i * 20})`)
+            .attr("transform", (d, i) => `translate(0, ${i * 22})`)
             .each(function (d) {
                 d3.select(this)
                     .append("rect")
                     .attr("width", 14)
                     .attr("height", 14)
-                    .attr("fill", d.color);
+                    .attr("fill", d.color)
+                    .attr("stroke", d.stroke || "none");
 
                 d3.select(this)
                     .append("text")
