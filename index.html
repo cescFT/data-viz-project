@@ -61,17 +61,29 @@
 
         </div>
         
-        <div class="text-center position-relative">
-            <h3>Situació laboral i nacionalitat</h3>
-            <i class="fa fa-spinner fa-spin"></i>
-            <svg id="sunburstNationalityStudy" width="600" height="600" style="display: none;"></svg>
+        <div class="mt-4">
+            <div class="text-center position-relative">
+                <h3>Situació laboral i nacionalitat</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="sunburstNationalityStudy" width="600" height="600" style="display: none;"></svg>
+            </div>
         </div>
+        
+        <div class="mt-4">
+            <div class="text-center position-relative">
+                <h3>Grup d'edat i metodologia emprada</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="groupedBarChartPerYearsAndIVEType" width="600" height="600" style="display: none;"></svg>
+            </div>
+        </div>
+
     </div>
 
 <script src="js/databasesInteraction.js"></script>
 <script src="js/totalsIVECatBarchartPerYear.js"></script>
 <script src="js/treemapMethodTypeIVE.js"></script>
 <script src="js/sunburstDiagramNationalityStudy.js"></script>
+<script src="js/groupedBarChartPerGroupYearAndMethod.js"></script>
 
 <script>
 
@@ -79,6 +91,7 @@
         totalsIVECatBarchartPerYearIVEPerYear();
         treemapMethodTypeIVE();
         sunburstDiagramNationalityStudy();
+        groupedBarChartPerGroupYearAndMethod();
     });
 
 </script>
