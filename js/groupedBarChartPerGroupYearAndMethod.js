@@ -7,18 +7,15 @@ async function groupedBarChartPerGroupYearAndMethod() {
             SELECT count(*) as total, grup_edat, metode
             FROM ive_cat
             GROUP BY grup_edat, metode
-            ORDER BY total
-            ;
+            ORDER BY grup_edat, metode;
         `);
 
-        
-         // Preparar dades
         const data = rows;
 
         const svg = d3.select("#groupedBarChartPerYearsAndIVEType");
         svg.selectAll("*").remove(); // Neteja l'SVG
 
-        const margin = { top: 50, right: 30, bottom: 80, left: 60 },
+        const margin = { top: 80, right: 30, bottom: 100, left: 60 },
               width = +svg.attr("width") - margin.left - margin.right,
               height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -27,16 +24,16 @@ async function groupedBarChartPerGroupYearAndMethod() {
         const grupsEdat = [...new Set(data.map(d => d.grup_edat))];
         const metodes = [...new Set(data.map(d => d.metode))];
 
-        // Escales
+        // Escales amb més espai
         const x0 = d3.scaleBand()
                      .domain(grupsEdat)
                      .range([0, width])
-                     .paddingInner(0.1);
+                     .paddingInner(0.3); // més espai entre grups
 
         const x1 = d3.scaleBand()
                      .domain(metodes)
                      .range([0, x0.bandwidth()])
-                     .padding(0.05);
+                     .padding(0.2); // més espai entre barres
 
         const y = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d.total)]).nice()
@@ -120,13 +117,13 @@ async function groupedBarChartPerGroupYearAndMethod() {
               .attr("text-anchor", "middle")
               .text(d => d.total);
 
-        // Llegenda
+        // Llegenda amb noms dels mètodes distribuïda horitzontalment
         const legend = svg.append("g")
-                          .attr("transform", `translate(${width + margin.left + 20}, ${margin.top})`);
+                          .attr("transform", `translate(${margin.left}, 20)`);
 
         metodes.forEach((m, i) => {
             const gLegend = legend.append("g")
-                                  .attr("transform", `translate(0, ${i * 25})`);
+                                  .attr("transform", `translate(${i * 120},0)`); // més separació horitzontal
 
             gLegend.append("rect")
                    .attr("width", 20)
@@ -136,7 +133,8 @@ async function groupedBarChartPerGroupYearAndMethod() {
             gLegend.append("text")
                    .attr("x", 25)
                    .attr("y", 15)
-                   .text(m);
+                   .text(m)
+                   .style("font-size", "12px");
         });
 
         $("#groupedBarChartPerYearsAndIVEType")
