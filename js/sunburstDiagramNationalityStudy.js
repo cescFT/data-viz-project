@@ -178,6 +178,30 @@ async function sunburstDiagramNationalityStudy() {
             });
 
         /* ---------------------------
+           Hover llegenda per ressaltar arcs
+        --------------------------- */
+        legend.selectAll("g")
+            .on("mouseover", function(event, d) {
+                g.selectAll("path")
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", p => {
+                        if (p.depth === 1) return p.data.name === d.label ? 1 : 0.2;
+                        if (p.depth === 2) {
+                            const natNode = p.ancestors().find(a => a.depth === 1);
+                            return natNode.data.name === d.label ? 1 : 0.2;
+                        }
+                        return 1;
+                    });
+            })
+            .on("mouseout", function() {
+                g.selectAll("path")
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", 1);
+            });
+
+        /* ---------------------------
            Mostrar
         --------------------------- */
         $("#sunburstNationalityStudy").show();
