@@ -30,7 +30,7 @@ function treemapMethodTypeIVE() {
 
             svg.selectAll("*").remove();
 
-            const tooltip = d3.select("#treemapTooltip");
+            const tooltip = d3.select("#treemapTooltipIVEMethodType");
             const container = svg.node().parentNode;
             const containerRect = container.getBoundingClientRect();
 
