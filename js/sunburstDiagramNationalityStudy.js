@@ -78,7 +78,7 @@ async function sunburstDiagramNationalityStudy() {
                 base: "#5B8FF9",
                 light: "#8CB3FF"
             },
-            "No espanyola": {
+            "No Espanyola": {
                 base: "#F6BD16",
                 light: "#FFD666"
             }
