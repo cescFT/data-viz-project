@@ -2,6 +2,9 @@ async function sunburstDiagramNationalityStudy() {
     try {
         const db = await loadSQLiteDatabase("ive_cat.sqlite");
 
+        /* ---------------------------
+           Consultes
+        --------------------------- */
         const totals = runQuery(db, `
             SELECT count(*) as total, primera_nacionalitat
             FROM ive_cat
@@ -27,9 +30,6 @@ async function sunburstDiagramNationalityStudy() {
         /* ---------------------------
            Mapes auxiliars
         --------------------------- */
-        const totalMap = {};
-        totals.forEach(d => totalMap[d.primera_nacionalitat] = d.total);
-
         const unemployedMap = {};
         unemployed.forEach(d => unemployedMap[d.primera_nacionalitat] = d.total);
 
@@ -48,7 +48,6 @@ async function sunburstDiagramNationalityStudy() {
 
                 return {
                     name: d.primera_nacionalitat,
-                    total: total,
                     children: [
                         {
                             name: "Aturada / Sense ingressos",
@@ -71,9 +70,18 @@ async function sunburstDiagramNationalityStudy() {
         const width = 650;
         const radius = width / 2;
 
+        /* ---------------------------
+           Colors per nacionalitat
+        --------------------------- */
         const colorScale = {
-            "Espanyola": ["#5B8FF9", "#8CB3FF"],
-            "No espanyola": ["#F6BD16", "#FFD666"]
+            "Espanyola": {
+                base: "#5B8FF9",
+                light: "#8CB3FF"
+            },
+            "No espanyola": {
+                base: "#F6BD16",
+                light: "#FFD666"
+            }
         };
 
         const svg = d3.select("#sunburstNationalityStudy");
@@ -81,9 +89,9 @@ async function sunburstDiagramNationalityStudy() {
 
         const g = svg
             .attr("width", width)
-            .attr("height", width)
+            .attr("height", width + 120)
             .append("g")
-            .attr("transform", `translate(${radius},${radius})`);
+            .attr("transform", `translate(${radius},${radius + 40})`);
 
         /* ---------------------------
            Layout
@@ -106,48 +114,54 @@ async function sunburstDiagramNationalityStudy() {
            Arcs
         --------------------------- */
         g.selectAll("path")
-            .data(root.descendants().filter(d => d.depth))
+            .data(root.descendants().filter(d => d.depth > 0))
             .enter()
             .append("path")
             .attr("d", arc)
             .attr("fill", d => {
-                const nat = d.ancestors().find(a => a.depth === 1).data.name;
+                const natNode = d.ancestors().find(a => a.depth === 1);
+                const nat = natNode.data.name;
                 return d.depth === 1
-                    ? colorScale[nat][0]
-                    : colorScale[nat][1];
+                    ? colorScale[nat].base
+                    : colorScale[nat].light;
             })
             .attr("stroke", "#fff");
 
         /* ---------------------------
-           Etiquetes
+           Percentatges (anella 2)
         --------------------------- */
-        g.selectAll("text")
+        g.selectAll("text.percent")
             .data(root.descendants().filter(d => d.depth === 2))
             .enter()
             .append("text")
+            .attr("class", "percent")
             .attr("transform", d => {
-                const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
-                const y = (d.y0 + d.y1) / 2;
-                return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+                const angle = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+                const r = (d.y0 + d.y1) / 2;
+                return `
+                    rotate(${angle - 90})
+                    translate(${r},0)
+                    rotate(${angle < 180 ? 0 : 180})
+                `;
             })
-            .attr("dx", "-15")
-            .attr("dy", ".35em")
-            .attr("font-size", "11px")
+            .attr("dy", "0.35em")
             .attr("text-anchor", "middle")
+            .attr("font-size", "11px")
+            .attr("fill", "#000")
             .text(d => `${d.data.percent.toFixed(1)}%`);
 
         /* ---------------------------
            Llegenda
         --------------------------- */
-        const legend = svg.append("g")
-            .attr("transform", "translate(10,10)");
-
         const legendData = [
             { label: "Espanyola", color: "#5B8FF9" },
             { label: "No espanyola", color: "#F6BD16" },
-            { label: "Aturada / Sense ingressos", color: "#DDD" },
-            { label: "Treballadora / Amb ingressos", color: "#AAA" }
+            { label: "Aturada / Sense ingressos", color: "#999" },
+            { label: "Treballadora / Amb ingressos", color: "#666" }
         ];
+
+        const legend = svg.append("g")
+            .attr("transform", "translate(20,20)");
 
         legend.selectAll("g")
             .data(legendData)
@@ -169,9 +183,9 @@ async function sunburstDiagramNationalityStudy() {
                     .attr("font-size", "12px");
             });
 
+        $("#sunburstNationalityStudy").show();
+        $("#sunburstNationalityStudy").closest("div").find(".fa-spinner").hide();
 
-    $("#sunburstNationalityStudy").show();
-    $("#sunburstNationalityStudy").closest('div').find('.fa-spinner').hide();
     } catch (err) {
         console.error(err);
     }
