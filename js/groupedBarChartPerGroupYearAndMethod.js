@@ -35,17 +35,20 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         const metodes   = [...new Set(data.map(d => d.metode))];
 
         /* =========================
-           ESCALES (BARRES MÉS AMPLES)
+           ESCALES
+           - Barres amples
+           - MÉS espai entre barres
         ========================= */
         const x0 = d3.scaleBand()
                      .domain(grupsEdat)
                      .range([0, width])
-                     .paddingInner(0.15);   // ↓ menys espai entre grups
+                     .paddingInner(0.15); // separació entre grups
 
         const x1 = d3.scaleBand()
                      .domain(metodes)
-                     .range([0, x0.bandwidth()])
-                     .padding(0.05);        // ↓ molt menys espai → barres amples
+                     // reservem una mica menys d’amplada del grup
+                     .range([0, x0.bandwidth() * 0.9])
+                     .padding(0.25); // ↑ més espai ENTRE barres
 
         const y = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d.total)])
@@ -89,7 +92,11 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .enter()
             .append("g")
             .attr("class", "grup")
-            .attr("transform", d => `translate(${x0(d[0])},0)`);
+            // centrem el subgrup dins del grup principal
+            .attr("transform", d => {
+                const offset = (x0.bandwidth() - x1.range()[1]) / 2;
+                return `translate(${x0(d[0]) + offset},0)`;
+            });
 
         /* =========================
            BARRES
