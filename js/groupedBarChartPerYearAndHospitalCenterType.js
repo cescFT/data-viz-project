@@ -12,11 +12,17 @@ async function groupedBarChartPerYearAndHospitalCenterType() {
 
         const data = rows;
 
+        const colorMap = {
+            "Centre de fora de Catalunya": "#5B8FF9",
+            "Hospitalari": "#5AD8A6",
+            "Extrahospitalari": "#F6BD16"
+        };
+
         /* =========================
            NORMALITZACIÓ
         ========================= */
         data.forEach(d => {
-            d.tipus_centre = (d.tipus_centre || "No especificat").trim();
+            d.tipus_centre = d.tipus_centre.trim();
         });
 
         const svg = d3.select("#groupedBarChartHospitalPerYearsAndIVEType");
