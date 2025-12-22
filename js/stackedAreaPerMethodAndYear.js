@@ -28,11 +28,12 @@ async function stackedAreaPerMethodAndYear() {
         const longMethods = methods.filter(d => d.length > 20);
 
         const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
-        const marginTop = legendRows * (legendRectSize + legendSpacing) + 50; // reservem espai per longMethods
+        const marginTop = legendRows * (legendRectSize + legendSpacing) + 50; // espai per longMethods
         const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
+        // Netejar SVG existent
         d3.select("#stackedAreaPerMethodAndYear").selectAll("*").remove();
 
         const svg = d3.select("#stackedAreaPerMethodAndYear")
@@ -70,6 +71,7 @@ async function stackedAreaPerMethodAndYear() {
             .attr("fill", d => color(d.key))
             .attr("d", area);
 
+        // Eixos
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickFormat(d3.format("d")));
@@ -77,6 +79,7 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
+        // ---------- Interactivitat ----------
         let selectedMethods = new Set();
 
         function updateChart() {
@@ -102,8 +105,10 @@ async function stackedAreaPerMethodAndYear() {
         function drawLegend(methodArray, startY, isSingleLine = false) {
             methodArray.forEach((d, i) => {
                 const row = isSingleLine ? 0 : Math.floor(i / maxLegendsPerRow);
-                const col = i % maxLegendsPerRow;
-                const xPos = col * legendXSpacing;
+                const col = isSingleLine ? i : i % maxLegendsPerRow;
+                const xPos = isSingleLine 
+                    ? (width / (methodArray.length + 1)) * (i + 0.5) - legendRectSize / 2 
+                    : col * legendXSpacing;
                 const yPos = startY + row * (legendRectSize + legendSpacing);
 
                 const g = svg.append("g")
@@ -137,12 +142,13 @@ async function stackedAreaPerMethodAndYear() {
             });
         }
 
-        // Curts en quadrícula
+        // Curts: quadrícula
         drawLegend(shortMethods, -margin.top);
 
-        // Llargs en línia separada
+        // Llargs: una sola línia
         drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing), true);
 
+        // Mostrar SVG i amagar spinner
         $("#stackedAreaPerMethodAndYear").show();
         $("#stackedAreaPerMethodAndYear").closest('div').find('.fa-spinner').hide();
 
