@@ -15,8 +15,8 @@ function treemapMethodTypeIVE(colorMap) {
             const treemapHeight = 500;
             const height = legendHeight + treemapHeight;
 
-            // Estat del filtre (SELECCIÓ MÚLTIPLE)
-            const activeTypes = new Set(Object.keys(colorMap));
+            // Estat del filtre (SELECCIÓ MÚLTIPLE AMB REINICI)
+            let activeTypes = new Set(Object.keys(colorMap));
 
             const svg = d3.select("#treemapMethodTypeIVE")
                 .attr("width", width)
@@ -46,12 +46,16 @@ function treemapMethodTypeIVE(colorMap) {
                 .style("cursor", "pointer")
                 .on("click", function (event, d) {
 
-                    if (activeTypes.has(d.label)) {
-                        activeTypes.delete(d.label);
+                    // Reinicia el filtre a només l'element clicat
+                    if (activeTypes.has(d.label) && activeTypes.size === 1) {
+                        // si ja era l'únic seleccionat → desmarca
+                        activeTypes.clear();
                         d3.select(this).attr("opacity", 0.4);
                     } else {
-                        activeTypes.add(d.label);
-                        d3.select(this).attr("opacity", 1);
+                        // selecciona només aquest
+                        activeTypes = new Set([d.label]);
+                        legendItem.attr("opacity", 0.4); // desmarca tots
+                        d3.select(this).attr("opacity", 1); // marca aquest
                     }
 
                     updateTreemap();
