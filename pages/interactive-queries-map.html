@@ -241,6 +241,8 @@
 
 
     $("body").on("click", "[data-action='submit']", function() {
+        const agesSelected = $("[name='years']").select2('data');
+        console.log(agesSelected);
         executeFilters(map);
     });
 
