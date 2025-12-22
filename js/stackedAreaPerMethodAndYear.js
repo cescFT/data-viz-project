@@ -23,8 +23,17 @@ async function stackedAreaPerMethodAndYear() {
             return entry;
         });
 
-        // Configuració del SVG inicial
-        const margin = {top: 50, right: 30, bottom: 50, left: 60};
+        // ---------- Configuració del SVG inicial ----------
+        const legendRectSize = 18;
+        const legendSpacing = 5;
+        const legendPadding = 5;
+        const maxLegendsPerRow = 5; // categories per fila
+
+        // Calcular quantes files necessitarem
+        const legendRows = Math.ceil(methods.length / maxLegendsPerRow);
+        const marginTop = legendRows * (legendRectSize + legendSpacing) + 20; // 20 px extra
+
+        const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
@@ -73,25 +82,15 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Llegenda automàtica sobre el gràfic ----------
-        const legendRectSize = 18;
-        const legendSpacing = 5;
-        const padding = 5;
-
-        // Crear element temporal per calcular amplades de text
-        const tempText = svg.append("text").attr("class", "tempLegend").style("visibility","hidden");
-        const legendWidths = methods.map(d => {
-            tempText.text(d);
-            return tempText.node().getBBox().width + legendRectSize + 5 + padding;
-        });
-        tempText.remove();
-
-        // Posicionar llegenda per files segons amplada
-        let xPos = 0;
-        let yPos = -margin.top + 10; // començem just per sobre del gràfic
-        let maxHeightInRow = 0;
+        // ---------- Llegenda sobre el gràfic, múltiples files ----------
+        const legendXSpacing = width / maxLegendsPerRow; // espai horitzontal per element
 
         methods.forEach((d, i) => {
+            const row = Math.floor(i / maxLegendsPerRow);
+            const col = i % maxLegendsPerRow;
+            const xPos = col * legendXSpacing;
+            const yPos = -margin.top + row * (legendRectSize + legendSpacing);
+
             const g = svg.append("g")
                 .attr("class", "legend")
                 .attr("transform", `translate(${xPos},${yPos})`);
@@ -107,18 +106,6 @@ async function stackedAreaPerMethodAndYear() {
                 .attr("dy", ".35em")
                 .style("text-anchor", "start")
                 .text(d);
-
-            const thisWidth = legendWidths[i];
-            const thisHeight = legendRectSize;
-            maxHeightInRow = Math.max(maxHeightInRow, thisHeight);
-
-            xPos += thisWidth;
-
-            if (xPos > width) {
-                xPos = 0;
-                yPos += maxHeightInRow + legendSpacing;
-                maxHeightInRow = 0;
-            }
         });
 
         // Mostrar SVG i amagar spinner
