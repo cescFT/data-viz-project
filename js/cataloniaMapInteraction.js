@@ -25,7 +25,7 @@ function loadCataloniaMapInteraction(map) {
 function styleComarcaTest(nomComarca) {
     return function (feature) {
         return {
-            fillColor: feature.properties.NOMCOMARCA === nomComarca
+            fillColor: feature.properties.nom_comar === nomComarca
                 ? '#ff0000'
                 : '#cccccc',
             weight: 1,
