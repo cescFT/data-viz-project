@@ -53,7 +53,7 @@ async function stackedAreaPerMethodAndYear() {
             .range(d3.schemeCategory10);
 
         const stack = d3.stack().keys(methods);
-        let stackedData = stack(dataByYear);
+        const stackedData = stack(dataByYear);
 
         const area = d3.area()
             .x(d => x(d.data.any))
@@ -82,18 +82,14 @@ async function stackedAreaPerMethodAndYear() {
         function updateChart() {
             const keysToShow = selectedMethods.size > 0 ? Array.from(selectedMethods) : methods;
 
-            // recalcular stack només amb les seleccionades
-            const filteredStack = d3.stack().keys(methods)(dataByYear);
+            // Manté tots els paths amb els colors originals, només modifica l'opacitat
+            areas.transition().duration(500)
+                .style("opacity", d => selectedMethods.size === 0 || selectedMethods.has(d.key) ? 1 : 0.2);
 
-            areas.data(filteredStack)
-                .transition().duration(500)
-                .attr("d", area)
-                .attr("fill", d => selectedMethods.size === 0 || selectedMethods.has(d.key) ? color(d.key) : "#ccc");
-            
-            // actualitzar color llegenda
-            svg.selectAll(".legend rect")
+            // actualitzar color text llegenda
+            svg.selectAll(".legend text")
                 .transition().duration(300)
-                .style("fill", d => selectedMethods.size === 0 || selectedMethods.has(d) ? color(d) : "#ccc");
+                .style("fill", d => selectedMethods.size === 0 || selectedMethods.has(d) ? "#000" : "#ccc");
         }
 
         // Dibuixar llegenda curts
