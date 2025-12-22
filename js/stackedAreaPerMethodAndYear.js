@@ -9,18 +9,6 @@ async function stackedAreaPerMethodAndYear() {
             order by any
         `);
 
-        // Configuració del SVG
-        const margin = {top: 30, right: 30, bottom: 50, left: 60};
-        const width = 800 - margin.left - margin.right;
-        const height = 500 - margin.top - margin.bottom;
-
-        const svg = d3.select("#stackedAreaPerMethodAndYear")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-
         // Extreure anys i mètodes únics
         const years = Array.from(new Set(rows.map(d => d.any))).sort((a,b) => a-b);
         const methods = Array.from(new Set(rows.map(d => d.metode)));
@@ -34,6 +22,18 @@ async function stackedAreaPerMethodAndYear() {
             });
             return entry;
         });
+
+        // Configuració del SVG inicial
+        const margin = {top: 50, right: 30, bottom: 50, left: 60};
+        const width = 800 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+
+        const svg = d3.select("#stackedAreaPerMethodAndYear")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
         // Escalats
         const x = d3.scaleLinear()
@@ -49,12 +49,10 @@ async function stackedAreaPerMethodAndYear() {
             .range(d3.schemeCategory10);
 
         // Crear stack
-        const stack = d3.stack()
-            .keys(methods);
-
+        const stack = d3.stack().keys(methods);
         const stackedData = stack(dataByYear);
 
-        // Àrees
+        // Àrea
         const area = d3.area()
             .x(d => x(d.data.any))
             .y0(d => y(d[0]))
@@ -70,35 +68,63 @@ async function stackedAreaPerMethodAndYear() {
         // Eixos
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).tickFormat(d3.format("d"))); // any com a enter
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // Llegenda
-        const legend = svg.selectAll(".legend")
-            .data(methods)
-            .enter().append("g")
-            .attr("class", "legend")
-            .attr("transform", (d,i) => `translate(0,${i*20})`);
+        // ---------- Llegenda automàtica sobre el gràfic ----------
+        const legendRectSize = 18;
+        const legendSpacing = 5;
+        const padding = 5;
 
-        legend.append("rect")
-            .attr("x", width - 18)
-            .attr("width", 18)
-            .attr("height", 18)
-            .style("fill", color);
+        // Crear element temporal per calcular amplades de text
+        const tempText = svg.append("text").attr("class", "tempLegend").style("visibility","hidden");
+        const legendWidths = methods.map(d => {
+            tempText.text(d);
+            return tempText.node().getBBox().width + legendRectSize + 5 + padding;
+        });
+        tempText.remove();
 
-        legend.append("text")
-            .attr("x", width - 24)
-            .attr("y", 9)
-            .attr("dy", ".35em")
-            .style("text-anchor", "end")
-            .text(d => d);
+        // Posicionar llegenda per files segons amplada
+        let xPos = 0;
+        let yPos = -margin.top + 10; // començem just per sobre del gràfic
+        let maxHeightInRow = 0;
 
+        methods.forEach((d, i) => {
+            const g = svg.append("g")
+                .attr("class", "legend")
+                .attr("transform", `translate(${xPos},${yPos})`);
+
+            g.append("rect")
+                .attr("width", legendRectSize)
+                .attr("height", legendRectSize)
+                .style("fill", color(d));
+
+            g.append("text")
+                .attr("x", legendRectSize + 5)
+                .attr("y", legendRectSize / 2)
+                .attr("dy", ".35em")
+                .style("text-anchor", "start")
+                .text(d);
+
+            const thisWidth = legendWidths[i];
+            const thisHeight = legendRectSize;
+            maxHeightInRow = Math.max(maxHeightInRow, thisHeight);
+
+            xPos += thisWidth;
+
+            if (xPos > width) {
+                xPos = 0;
+                yPos += maxHeightInRow + legendSpacing;
+                maxHeightInRow = 0;
+            }
+        });
 
         // Mostrar SVG i amagar spinner
         $("#stackedAreaPerMethodAndYear").show();
         $("#stackedAreaPerMethodAndYear").closest('div').find('.fa-spinner').hide();
+
     } catch (err) {
         console.error("Error:", err);
     }
