@@ -55,7 +55,7 @@ async function sunburstDiagramNationalityStudy() {
         };
 
         // ESTAT DE SELECCIÓ MÚLTIPLE (LLEGENDA)
-        const activeNationalities = new Set(Object.keys(colorScale));
+        let activeNationalities = new Set(); // buit → mostrar tot
 
         const svg = d3.select("#sunburstNationalityStudy");
         svg.selectAll("*").remove();
@@ -105,16 +105,28 @@ async function sunburstDiagramNationalityStudy() {
            Funció d'actualització visual segons selecció
         --------------------------- */
         function updateVisibility() {
-            paths
-                .transition()
+            const filterSet = activeNationalities.size === 0
+                ? new Set(Object.keys(colorScale))
+                : activeNationalities;
+
+            // Arcs
+            paths.transition()
                 .duration(200)
                 .attr("opacity", d => {
                     const natNode = d.depth === 1
                         ? d
                         : d.ancestors().find(a => a.depth === 1);
-
-                    return activeNationalities.has(natNode.data.name) ? 1 : 0.2;
+                    return filterSet.has(natNode.data.name) ? 1 : 0.2;
                 });
+
+            // Llegenda: gris els no seleccionats
+            legendItems.each(function(ld) {
+                if (activeNationalities.size === 0) {
+                    d3.select(this).attr("opacity", 1); // tot normal
+                } else {
+                    d3.select(this).attr("opacity", activeNationalities.has(ld.label) ? 1 : 0.3);
+                }
+            });
         }
 
         /* ---------------------------
@@ -167,7 +179,7 @@ async function sunburstDiagramNationalityStudy() {
             });
 
         /* ---------------------------
-           Llegenda (clicable + multiselecció)
+           Llegenda (clicable + multiselecció + gris no seleccionats)
         --------------------------- */
         const legendData = [
             { label: "Espanyola", color: colorScale["Espanyola"].base },
@@ -183,14 +195,13 @@ async function sunburstDiagramNationalityStudy() {
             .append("g")
             .attr("transform", (d, i) => `translate(0, ${i * 20})`)
             .style("cursor", "pointer")
+            .attr("opacity", 1)
             .on("click", function (event, d) {
-
+                // Toggle selecció
                 if (activeNationalities.has(d.label)) {
                     activeNationalities.delete(d.label);
-                    d3.select(this).attr("opacity", 0.4);
                 } else {
                     activeNationalities.add(d.label);
-                    d3.select(this).attr("opacity", 1);
                 }
 
                 updateVisibility();
