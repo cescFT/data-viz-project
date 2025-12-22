@@ -58,10 +58,10 @@ async function circlePackingSocialExclusionRisk() {
         const g = svg.append("g");
 
         const colorMap = {
-            0: "#e0e0e0", // fons gris
-            1: "#a6cee3",  // situacio_convivència
-            2: "#b2df8a",  // ingressos
-            3: "#ff7f0e"   // finançament_public
+            0: "#e0e0e0",
+            1: "#a6cee3",
+            2: "#b2df8a",
+            3: "#ff7f0e"
         };
 
         const nodes = g.selectAll("circle")
@@ -81,7 +81,7 @@ async function circlePackingSocialExclusionRisk() {
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
             .style("font-weight", "bold")
             .text(d => d.data.name)
-            .style("opacity", d => d.depth === 1 ? 1 : 0); // només nivell 1 inicial
+            .style("opacity", d => d.depth === 1 ? 1 : 0);
 
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
@@ -119,20 +119,17 @@ async function circlePackingSocialExclusionRisk() {
         const zoom = (d) => {
             focus = d;
             zoomTo([d.x, d.y, d.r * 2]);
-
-            labels.style("opacity", l => (l.parent === d ? 1 : 0)); // només fills visibles
+            labels.style("opacity", l => (l.parent === d ? 1 : 0));
         };
 
         nodes.on("click", (event, d) => {
-            if (focus === d) {
-                zoom(root); // tornar al nivell inicial
-            } else {
-                zoom(d);
-            }
+            if (focus === d) zoom(root);
+            else zoom(d);
         });
 
-        zoom(root); // inicial
+        zoom(root);
 
+        // Llegenda amb border
         const legendData = [
             { name: "Situació de convivència", color: colorMap[1] },
             { name: "Ingressos", color: colorMap[2] },
@@ -146,7 +143,9 @@ async function circlePackingSocialExclusionRisk() {
             .attr("y", (d,i)=>i*25)
             .attr("width", 18)
             .attr("height", 18)
-            .attr("fill", d=>d.color);
+            .attr("fill", d=>d.color)
+            .attr("stroke", "#000")       // border negre
+            .attr("stroke-width", 1);    // amplada del border
 
         legend.selectAll("text")
             .data(legendData)
