@@ -101,7 +101,9 @@ async function stackedAreaPerMethodAndYear() {
             g.append("rect")
                 .attr("width", legendRectSize)
                 .attr("height", legendRectSize)
-                .style("fill", color(d));
+                .style("fill", color(d))
+                .style("stroke", "#000")        // <-- borde negre
+                .style("stroke-width", 1);      // <-- ample del borde
 
             g.append("text")
                 .attr("x", legendRectSize + 5)
@@ -123,7 +125,9 @@ async function stackedAreaPerMethodAndYear() {
             g.append("rect")
                 .attr("width", legendRectSize)
                 .attr("height", legendRectSize)
-                .style("fill", color(d));
+                .style("fill", color(d))
+                .style("stroke", "#000")        // <-- borde negre
+                .style("stroke-width", 1);      // <-- ample del borde
 
             g.append("text")
                 .attr("x", legendRectSize + 5)
