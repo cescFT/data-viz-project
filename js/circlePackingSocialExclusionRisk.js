@@ -57,9 +57,8 @@ async function circlePackingSocialExclusionRisk() {
 
         const g = svg.append("g");
 
-        // Colors per nivell
         const colorMap = {
-            0: "#e0e0e0", // arrel/fons gris
+            0: "#e0e0e0", // fons gris
             1: "#a6cee3",  // situacio_convivència
             2: "#b2df8a",  // ingressos
             3: "#ff7f0e"   // finançament_public
@@ -73,7 +72,6 @@ async function circlePackingSocialExclusionRisk() {
             .attr("stroke-width", 1.5)
             .attr("cursor", "pointer");
 
-        // Labels amb negreta si és del seu nivell
         const labels = g.selectAll("text")
             .data(root.descendants())
             .join("text")
@@ -81,11 +79,10 @@ async function circlePackingSocialExclusionRisk() {
             .attr("dy", "0.3em")
             .style("pointer-events", "none")
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
-            .style("font-weight", d => d.r > 20 ? "bold" : "normal") // només grans en negreta
-            .style("opacity", d => d.r > 20 ? 1 : 0)
-            .text(d => d.data.name);
+            .style("font-weight", "bold")
+            .text(d => d.data.name)
+            .style("opacity", d => d.depth === 1 ? 1 : 0); // només nivell 1 inicial
 
-        // Tooltip amb nivell i valor
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
             .style("background", "rgba(0,0,0,0.7)")
@@ -110,6 +107,8 @@ async function circlePackingSocialExclusionRisk() {
             tooltip.transition().duration(200).style("opacity", 0);
         });
 
+        let focus = root;
+
         const zoomTo = (v) => {
             const k = width / v[2];
             labels.attr("transform", d => `translate(${(d.x - v[0]) * k + width/2},${(d.y - v[1]) * k + height/2})`);
@@ -117,9 +116,23 @@ async function circlePackingSocialExclusionRisk() {
             nodes.attr("r", d => d.r * k);
         };
 
-        zoomTo([root.x, root.y, root.r*2]);
+        const zoom = (d) => {
+            focus = d;
+            zoomTo([d.x, d.y, d.r * 2]);
 
-        // Llegenda
+            labels.style("opacity", l => (l.parent === d ? 1 : 0)); // només fills visibles
+        };
+
+        nodes.on("click", (event, d) => {
+            if (focus === d) {
+                zoom(root); // tornar al nivell inicial
+            } else {
+                zoom(d);
+            }
+        });
+
+        zoom(root); // inicial
+
         const legendData = [
             { name: "Situació de convivència", color: colorMap[1] },
             { name: "Ingressos", color: colorMap[2] },
