@@ -55,12 +55,7 @@ async function circlePackingSocialExclusionRisk() {
 
         const g = svg.append("g");
 
-        const colorMap = {
-            0: "#e0e0e0",
-            1: "#a6cee3",
-            2: "#b2df8a",
-            3: "#ff7f0e"
-        };
+        const colorMap = {0: "#e0e0e0", 1: "#a6cee3", 2: "#b2df8a", 3: "#ff7f0e"};
 
         const nodes = g.selectAll("circle")
             .data(root.descendants())
@@ -79,7 +74,7 @@ async function circlePackingSocialExclusionRisk() {
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
             .style("font-weight", "bold")
             .text(d => d.data.name)
-            .style("opacity", d => d.depth === 1 ? 1 : 0); // només nivell 1 inicial
+            .style("opacity", d => d.depth === 1 ? 1 : 0); // inicial només nivell 1
 
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
@@ -126,12 +121,16 @@ async function circlePackingSocialExclusionRisk() {
                 });
 
             labels.transition(transition)
-                .style("opacity", l => (l.depth === 3 ? 1 : (l.parent === d ? 1 : 0))); // manté text fulles
+                .style("opacity", l => {
+                    if (l.depth === 3) return 1;                  // fulles sempre visibles
+                    if (l.parent === d && l.depth < 3) return 1;  // nivell actual visible
+                    if (d === focus && l.parent !== d) return 0;  // altres desapareixen
+                    return l.style.opacity;                       // si ja era visible, manté
+                });
         };
 
         nodes.on("click", (event, d) => {
-            if (focus === d) zoom(root);
-            else zoom(d);
+            zoom(d);  // si cliques al mateix node, manté el text
         });
 
         zoom(root);
