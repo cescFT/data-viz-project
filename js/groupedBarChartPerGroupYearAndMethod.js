@@ -35,17 +35,17 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         const metodes   = [...new Set(data.map(d => d.metode))];
 
         /* =========================
-           ESCALES
+           ESCALES (BARRES MÉS AMPLES)
         ========================= */
         const x0 = d3.scaleBand()
                      .domain(grupsEdat)
                      .range([0, width])
-                     .paddingInner(0.3);
+                     .paddingInner(0.15);   // ↓ menys espai entre grups
 
         const x1 = d3.scaleBand()
                      .domain(metodes)
                      .range([0, x0.bandwidth()])
-                     .padding(0.2);
+                     .padding(0.05);        // ↓ molt menys espai → barres amples
 
         const y = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d.total)])
@@ -125,13 +125,13 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .append("text")
             .attr("class", "label")
             .attr("x", d => x1(d.metode) + x1.bandwidth() / 2)
-            .attr("y", d => y(d.total) - 5)
+            .attr("y", d => y(d.total) - 6)
             .attr("text-anchor", "middle")
             .style("font-size", "11px")
             .text(d => d.total);
 
         /* =========================
-           LLEGENDA (CORREGIDA)
+           LLEGENDA
         ========================= */
         const legend = svg.append("g")
                           .attr("transform", `translate(${margin.left},20)`);
