@@ -33,6 +33,9 @@ async function stackedAreaPerMethodAndYear() {
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
+        // Netejar si ja existia un SVG
+        d3.select("#stackedAreaPerMethodAndYear").selectAll("*").remove();
+
         const svg = d3.select("#stackedAreaPerMethodAndYear")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -61,10 +64,11 @@ async function stackedAreaPerMethodAndYear() {
             .y1(d => y(d[1]));
 
         // ---------- Dibuixar àrees ----------
-        const areas = svg.selectAll("path")
+        const areas = svg.selectAll(".metode-path")
             .data(stackedData)
             .enter()
             .append("path")
+            .attr("class", "metode-path")
             .attr("fill", d => color(d.key))
             .attr("d", area);
 
@@ -76,22 +80,37 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Llegenda clicable múltiple ----------
-        const legendXSpacing = width / maxLegendsPerRow;
+        // ---------- Lògica d'Interactivitat ----------
         let selectedMethods = new Set();
 
         function updateChart() {
-            const keysToShow = selectedMethods.size > 0 ? Array.from(selectedMethods) : methods;
+            const isAnySelected = selectedMethods.size > 0;
 
-            // Opacitat dels paths
+            // Actualitzar àrees: Color original si està triat, gris si no (o tots colors si res triat)
             areas.transition().duration(500)
-                .style("opacity", d => keysToShow.includes(d.key) ? 1 : 0.2);
+                .attr("fill", d => {
+                    if (!isAnySelected) return color(d.key);
+                    return selectedMethods.has(d.key) ? color(d.key) : "#D3D3D3";
+                })
+                .style("opacity", d => {
+                    if (!isAnySelected) return 1;
+                    return selectedMethods.has(d.key) ? 1 : 0.6;
+                });
 
-            // Color del text de la llegenda
-            svg.selectAll(".legend text")
+            // Actualitzar quadrats de la llegenda: vora de color i gruixuda
+            svg.selectAll(".legend-rect")
                 .transition().duration(300)
-                .style("fill", d => selectedMethods.has(d) ? "#000" : (selectedMethods.size === 0 ? "#000" : "#ccc"));
+                .style("stroke", d => selectedMethods.has(d) ? color(d) : "#000")
+                .style("stroke-width", d => selectedMethods.has(d) ? 3 : 1);
+
+            // Actualitzar text de la llegenda
+            svg.selectAll(".legend-text")
+                .transition().duration(300)
+                .style("fill", d => !isAnySelected || selectedMethods.has(d) ? "#000" : "#aaa")
+                .style("font-weight", d => selectedMethods.has(d) ? "bold" : "normal");
         }
+
+        const legendXSpacing = width / maxLegendsPerRow;
 
         function drawLegend(methodArray, startY) {
             methodArray.forEach((d, i) => {
@@ -111,25 +130,28 @@ async function stackedAreaPerMethodAndYear() {
                     });
 
                 g.append("rect")
+                    .attr("class", "legend-rect")
+                    .datum(d) // Enllacem la dada per al selector d'updateChart
                     .attr("width", legendRectSize)
                     .attr("height", legendRectSize)
-                    .style("fill", color(d))
+                    .style("fill", "#000") // Opció negra per defecte
                     .style("stroke", "#000")
                     .style("stroke-width", 1);
 
                 g.append("text")
+                    .attr("class", "legend-text")
+                    .datum(d)
                     .attr("x", legendRectSize + 5)
                     .attr("y", legendRectSize / 2)
                     .attr("dy", ".35em")
                     .style("text-anchor", "start")
+                    .style("font-size", "12px")
                     .text(d);
             });
         }
 
-        // Curts en quadrícula
+        // Dibuixar les dues seccions de la llegenda
         drawLegend(shortMethods, -margin.top);
-
-        // Llargs en línia separada
         drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing));
 
         // Mostrar SVG i amagar spinner
