@@ -1,4 +1,4 @@
-function treemapMethodTypeIVE() {
+function treemapMethodTypeIVE(colorMap) {
 
     fetch('static-data/IVE_methods_hierarchy.json')
         .then(response => {
@@ -14,12 +14,6 @@ function treemapMethodTypeIVE() {
             const legendHeight = 40;
             const treemapHeight = 500;
             const height = legendHeight + treemapHeight;
-
-            const colorMap = {
-                "Mètodes quirúrgics": "#5B8FF9",
-                "Mètodes farmacològics": "#5AD8A6",
-                "No especificat": "#F6BD16"
-            };
 
             // Estat del filtre
             const activeTypes = new Set(Object.keys(colorMap));

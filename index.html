@@ -88,10 +88,18 @@
 <script>
 
     $(document).ready(function(){
+
+        const colorMap = {
+            "Mètodes quirúrgics": "#5B8FF9",
+            "Mètodes farmacològics": "#5AD8A6",
+            "No especificat": "#F6BD16"
+        };
+
+
         totalsIVECatBarchartPerYearIVEPerYear();
-        treemapMethodTypeIVE();
+        treemapMethodTypeIVE(colorMap);
         sunburstDiagramNationalityStudy();
-        groupedBarChartPerGroupYearAndMethod();
+        groupedBarChartPerGroupYearAndMethod(colorMap);
     });
 
 </script>
