@@ -27,9 +27,12 @@ async function stackedAreaPerMethodAndYear() {
         const shortMethods = methods.filter(d => d.length <= 20);
         const longMethods = methods.filter(d => d.length > 20);
 
-        const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
-        const marginTop = legendRows * (legendRectSize + legendSpacing) + 50; // espai per longMethods
-        const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
+        // Calculem files i espai necessari per la llegenda
+        const shortLegendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
+        const longLegendRows = longMethods.length; // cada mètode llarg ocupa una fila
+        const totalLegendHeight = (shortLegendRows + longLegendRows) * (legendRectSize + legendSpacing) + 20;
+
+        const margin = {top: totalLegendHeight, right: 30, bottom: 50, left: 60};
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
@@ -145,8 +148,8 @@ async function stackedAreaPerMethodAndYear() {
         // Curts: quadrícula
         drawLegend(shortMethods, -margin.top);
 
-        // Llargs: una sola línia, cadascun en fila separada
-        drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing), true);
+        // Llargs: una columna, una fila per mètode llarg
+        drawLegend(longMethods, -margin.top + shortLegendRows * (legendRectSize + legendSpacing), true);
 
         // Mostrar SVG i amagar spinner
         $("#stackedAreaPerMethodAndYear").show();
