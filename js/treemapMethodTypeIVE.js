@@ -48,16 +48,16 @@ function treemapMethodTypeIVE(colorMap) {
                 .on("click", function (event, d) {
 
                     if (activeTypes.has(d.label)) {
-                        // si ja estava seleccionat → deselecciona
+                        // Si ja estava seleccionat → deselecciona
                         activeTypes.delete(d.label);
                         d3.select(this).attr("opacity", 0.4);
                     } else {
-                        // afegeix a la selecció
+                        // Si no estava seleccionat → selecciona
                         activeTypes.add(d.label);
                         d3.select(this).attr("opacity", 1);
                     }
 
-                    // si no hi ha cap seleccionat, torna a seleccionar tots
+                    // Si no hi ha cap seleccionat, torna a seleccionar tots
                     if (activeTypes.size === 0) {
                         activeTypes = new Set(Object.keys(colorMap));
                         legendItem.attr("opacity", 1);
