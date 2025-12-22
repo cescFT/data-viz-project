@@ -20,7 +20,6 @@ async function stackedAreaPerMethodAndYear() {
             return entry;
         });
 
-        // ---------- Configuració SVG i llegenda ----------
         const legendRectSize = 18;
         const legendSpacing = 5;
         const maxLegendsPerRow = 5;
@@ -82,17 +81,18 @@ async function stackedAreaPerMethodAndYear() {
         let selectedMethods = new Set();
 
         function updateChart() {
-            // Manté tots els paths amb els colors originals, només modifica l'opacitat
-            areas.transition().duration(500)
-                .style("opacity", d => selectedMethods.size === 0 || selectedMethods.has(d.key) ? 1 : 0.2);
+            const keysToShow = selectedMethods.size > 0 ? Array.from(selectedMethods) : methods;
 
-            // Actualitzar color del text de la llegenda
+            // Opacitat dels paths
+            areas.transition().duration(500)
+                .style("opacity", d => keysToShow.includes(d.key) ? 1 : 0.2);
+
+            // Color del text de la llegenda
             svg.selectAll(".legend text")
                 .transition().duration(300)
-                .style("fill", d => selectedMethods.size === 0 || selectedMethods.has(d) ? "#000" : "#ccc");
+                .style("fill", d => selectedMethods.has(d) ? "#000" : (selectedMethods.size === 0 ? "#000" : "#ccc"));
         }
 
-        // Funció comuna per dibuixar llegenda
         function drawLegend(methodArray, startY) {
             methodArray.forEach((d, i) => {
                 const row = Math.floor(i / maxLegendsPerRow);
@@ -126,10 +126,10 @@ async function stackedAreaPerMethodAndYear() {
             });
         }
 
-        // Llegenda curts (en quadrícula)
+        // Curts en quadrícula
         drawLegend(shortMethods, -margin.top);
 
-        // Llegenda llargs (en línia separada)
+        // Llargs en línia separada
         drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing));
 
         // Mostrar SVG i amagar spinner
