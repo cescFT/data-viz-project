@@ -37,6 +37,11 @@ function styleComarcaTest(nomComarca) {
 
 
 function executeFilters(map) {
+
+    //TODO: passar els filtres executant la query
+
+
+
     fetch('../static-data/comarques_catalunya.geojson')
         .then(response => response.json())
         .then(data => {
