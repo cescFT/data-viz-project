@@ -7,15 +7,11 @@ function treemapMethodTypeIVE(colorMap) {
         })
         .then(data => {
 
-            /* ============================
-               1. Configuració bàsica
-            ============================ */
             const width = 900;
             const legendHeight = 40;
             const treemapHeight = 500;
             const height = legendHeight + treemapHeight;
 
-            // Estat del filtre (SELECCIÓ MÚLTIPLE AMB POSSIBILITAT DE DESELECCIÓ)
             let activeTypes = new Set(); // buit → mostra tot
 
             const svg = d3.select("#treemapMethodTypeIVE")
@@ -27,9 +23,9 @@ function treemapMethodTypeIVE(colorMap) {
             const tooltip = d3.select("#treemapTooltipIVEMethodType");
             const containerRect = svg.node().parentNode.getBoundingClientRect();
 
-            /* ============================
-               2. LLEGENDA INTERACTIVA
-            ============================ */
+            /* ---------------------------
+               Llegenda interactiva
+            --------------------------- */
             const legend = svg.append("g")
                 .attr("class", "legend")
                 .attr("transform", "translate(20,10)");
@@ -47,24 +43,27 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("opacity", 1)
                 .on("click", function (event, d) {
 
-                    // Toggle de selecció
+                    // Toggle selecció
                     if (activeTypes.has(d.label)) {
-                        activeTypes.delete(d.label); // deselecciona
+                        activeTypes.delete(d.label);
                     } else {
-                        activeTypes.add(d.label); // selecciona
+                        activeTypes.add(d.label);
                     }
 
                     // Si no hi ha cap seleccionat → mostra tot
                     if (activeTypes.size === 0) {
-                        activeTypes = new Set(); // buit → mostrar tot
+                        activeTypes = new Set();
                     }
 
-                    // Actualitzar opacitat de la llegenda
+                    // Actualitzar opacitat i border
                     legendItem.each(function(ld) {
+                        const rect = d3.select(this).select("rect");
                         if (activeTypes.size === 0) {
-                            d3.select(this).attr("opacity", 1); // tot normal
+                            d3.select(this).attr("opacity", 1);
+                            rect.attr("stroke-width", 0); // sense border
                         } else {
-                            d3.select(this).attr("opacity", activeTypes.has(ld.label) ? 1 : 0.3); // gris els no seleccionats
+                            d3.select(this).attr("opacity", activeTypes.has(ld.label) ? 1 : 0.3);
+                            rect.attr("stroke-width", activeTypes.has(ld.label) ? 2 : 0); // border només als seleccionats
                         }
                     });
 
@@ -76,7 +75,9 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("height", 14)
                 .attr("rx", 2)
                 .attr("ry", 2)
-                .attr("fill", d => d.color);
+                .attr("fill", d => d.color)
+                .attr("stroke", "#000")
+                .attr("stroke-width", 0); // inicialment sense border
 
             legendItem.append("text")
                 .attr("x", 22)
@@ -85,21 +86,20 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("font-size", "13px")
                 .attr("fill", "#333");
 
-            /* ============================
-               3. Grup del treemap
-            ============================ */
+            /* ---------------------------
+               Grup del treemap
+            --------------------------- */
             const treemapGroup = svg.append("g")
                 .attr("class", "treemap-group")
                 .attr("transform", `translate(0,${legendHeight})`);
 
-            /* ============================
-               4. Funció de renderitzat
-            ============================ */
+            /* ---------------------------
+               Funció de renderitzat
+            --------------------------- */
             function updateTreemap() {
 
                 treemapGroup.selectAll("*").remove();
 
-                // Si activeTypes està buit → mostrar tot
                 const filterSet = activeTypes.size === 0 ? new Set(Object.keys(colorMap)) : activeTypes;
 
                 const filteredHierarchy = {
@@ -132,7 +132,6 @@ function treemapMethodTypeIVE(colorMap) {
                     .append("g")
                     .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
-                // RECTANGLES
                 nodes.append("rect")
                     .attr("width", d => d.x1 - d.x0)
                     .attr("height", d => d.y1 - d.y0)
@@ -167,7 +166,6 @@ function treemapMethodTypeIVE(colorMap) {
                             .style("display", "none");
                     });
 
-                // TEXT
                 nodes.append("text")
                     .attr("x", 5)
                     .attr("y", 16)
@@ -177,9 +175,6 @@ function treemapMethodTypeIVE(colorMap) {
                     .attr("pointer-events", "none");
             }
 
-            /* ============================
-               5. Render inicial
-            ============================ */
             updateTreemap();
 
             $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
