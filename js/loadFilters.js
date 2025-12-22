@@ -20,6 +20,7 @@ async function loadFilters() {
             placeholder: "Selecciona anys",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -38,6 +39,7 @@ async function loadFilters() {
             placeholder: "Selecciona tipus de centre",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -57,6 +59,7 @@ async function loadFilters() {
             placeholder: "Selecciona tipus de finançament",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -76,6 +79,7 @@ async function loadFilters() {
             placeholder: "Selecciona grup d'edat",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -94,6 +98,7 @@ async function loadFilters() {
             placeholder: "Selecciona situació de convivència",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -112,6 +117,7 @@ async function loadFilters() {
             placeholder: "Selecciona fills a càrrec",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -130,6 +136,7 @@ async function loadFilters() {
             placeholder: "Selecciona fills vius",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -149,6 +156,7 @@ async function loadFilters() {
             placeholder: "Selecciona situació laboral",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
@@ -167,6 +175,7 @@ async function loadFilters() {
             placeholder: "Selecciona ingressos",
             allowClear: true,
             width: "100%",
+            closeOnSelect: false,
             dropdownParent: filtersForm
         });
 
