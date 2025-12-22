@@ -34,7 +34,6 @@ async function circlePackingSocialExclusionRisk() {
 
         const rootData = buildHierarchy(rows);
 
-        // Augmentar dimensions per més espai
         const width = 900;
         const height = 900;
 
@@ -58,12 +57,12 @@ async function circlePackingSocialExclusionRisk() {
 
         const g = svg.append("g");
 
-        // Colors per nivell i arrel
+        // Colors per nivell
         const colorMap = {
-            0: "#e0e0e0",        // arrel/fons: gris clar
-            1: "#a6cee3",         // situacio_convivència
-            2: "#b2df8a",         // ingressos
-            3: d => d.data.name === "Sí" ? "#1f77b4" : "#ff7f0e" // financament_public
+            0: "#e0e0e0", // arrel/fons gris
+            1: "#a6cee3",  // situacio_convivència
+            2: "#b2df8a",  // ingressos
+            3: "#ff7f0e"   // finançament_public: un sol color per totes les fulles
         };
 
         const nodes = g.selectAll("circle")
@@ -72,7 +71,7 @@ async function circlePackingSocialExclusionRisk() {
             .attr("fill", d => {
                 if (d.depth === 0) return colorMap[0];       // arrel/fons gris
                 if (d.children) return colorMap[d.depth];   // nodes jeràrquics
-                return colorMap[3](d);                      // fulles
+                return colorMap[3];                          // fulles: color únic
             })
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
@@ -89,7 +88,6 @@ async function circlePackingSocialExclusionRisk() {
             .text(d => d.data.name)
             .style("opacity", d => d.parent === root ? 1 : 0);
 
-        // Tooltip
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
             .style("background", "rgba(0,0,0,0.7)")
@@ -139,12 +137,10 @@ async function circlePackingSocialExclusionRisk() {
 
         zoomTo([root.x, root.y, root.r * 2]);
 
-        // Llegenda
         const legendData = [
             { name: "Situació de convivència", color: colorMap[1] },
             { name: "Ingressos", color: colorMap[2] },
-            { name: "Finançament públic - Sí", color: "#1f77b4" },
-            { name: "Finançament públic - No", color: "#ff7f0e" }
+            { name: "Finançament públic", color: colorMap[3] }
         ];
 
         const legend = svg.append("g")
