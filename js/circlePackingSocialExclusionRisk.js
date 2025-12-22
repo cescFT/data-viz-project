@@ -86,11 +86,15 @@ async function circlePackingSocialExclusionRisk() {
             .style("opacity", 0);
 
         nodes.on("mouseover", (event, d) => {
-            const levelName = d.depth === 1 ? "Situació de convivència" :
-                              d.depth === 2 ? "Ingressos" :
-                              d.depth === 3 ? "Finançament públic" : "";
+            let levelName = "";
+            if (d.depth === 1) levelName = "Situació de convivència";
+            else if (d.depth === 2) levelName = "Ingressos";
+            else if (d.depth === 3) levelName = "Finançament públic";
+            else if (d.depth === 0) levelName = "Arrel";
+
+            const valueText = d.value !== undefined ? `: ${d.value}` : "";
             tooltip.transition().duration(200).style("opacity", 1);
-            tooltip.html(d.children ? d.data.name : `${levelName} - ${d.data.name}: ${d.value}`)
+            tooltip.html(`${levelName} - ${d.data.name}${valueText}`)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
         }).on("mousemove", (event) => {
@@ -122,10 +126,10 @@ async function circlePackingSocialExclusionRisk() {
 
             labels.transition(transition)
                 .style("opacity", l => {
-                    if (!d.children) return 1;                // fulles sempre visibles
-                    if (l.parent === d) return 1;             // fills del node focus visibles
-                    if (l === d) return 1;                    // node focus visible
-                    return 0;                                 // la resta desapareix
+                    if (!l.children) return 1;                 // fulles sempre visibles
+                    if (l.parent === d) return 1;              // fills del node focus visibles
+                    if (l === d) return 1;                     // node focus visible
+                    return 0;                                  // la resta desapareix
                 });
         };
 
