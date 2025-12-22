@@ -85,6 +85,15 @@
             </div>
         </div>
 
+
+        <div class="mt-4">
+            <div class="text-center position-relative">
+                <h3>Metodologia emprada per any</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="stackedAreaPerMethodAndYear" width="900" height="900" style="display: none;"></svg>
+            </div>
+        </div>
+
     </div>
 
 <script src="js/databasesInteraction.js"></script>
@@ -93,6 +102,7 @@
 <script src="js/sunburstDiagramNationalityStudy.js"></script>
 <script src="js/groupedBarChartPerGroupYearAndMethod.js"></script>
 <script src="js/circlePackingSocialExclusionRisk.js"></script>
+<script src="js/stackedAreaPerMethodAndYear.js"></script>
 
 <script>
 
@@ -110,6 +120,7 @@
         sunburstDiagramNationalityStudy();
         groupedBarChartPerGroupYearAndMethod(colorMap);
         circlePackingSocialExclusionRisk();
+        stackedAreaPerMethodAndYear();
     });
 
 </script>
