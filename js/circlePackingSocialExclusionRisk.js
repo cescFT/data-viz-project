@@ -94,13 +94,7 @@ async function circlePackingSocialExclusionRisk() {
 
             const valueText = d.value !== undefined ? `: ${d.value}` : "";
             tooltip.transition().duration(200).style("opacity", 1);
-            let tooltipText = `${levelName} - ${d.data.name}${valueText}`;
-
-            if (levelName === "Arrel") {
-                tooltipText = `${d.data.name}${valueText}`;
-            }
-
-            tooltip.html(tooltipText)
+            tooltip.html(`${levelName} - ${d.data.name}${valueText}`)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
         }).on("mousemove", (event) => {
@@ -112,7 +106,6 @@ async function circlePackingSocialExclusionRisk() {
 
         let focus = root;
         let view = [root.x, root.y, root.r * 2];
-        let zoomHistory = []; // historial per Back
 
         const zoomTo = (v) => {
             const k = width / v[2];
@@ -123,7 +116,6 @@ async function circlePackingSocialExclusionRisk() {
         };
 
         const zoom = (d) => {
-            if (focus !== d) zoomHistory.push(focus); // guardar historial
             focus = d;
 
             const transition = svg.transition()
@@ -146,7 +138,7 @@ async function circlePackingSocialExclusionRisk() {
             zoom(d);
         });
 
-        // Botó Back
+        // Botó Back per pujar al node pare
         const backButton = svg.append("g")
             .attr("transform", "translate(20,20)")
             .style("cursor", "pointer");
@@ -162,14 +154,13 @@ async function circlePackingSocialExclusionRisk() {
             .attr("y", 17)
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "middle")
-            .text("Back")
+            .text("Pujar un nivell")
             .style("font-size", "12px")
             .style("pointer-events", "none");
 
         backButton.on("click", () => {
-            if (zoomHistory.length > 0) {
-                const previous = zoomHistory.pop();
-                zoom(previous);
+            if (focus.parent) {
+                zoom(focus.parent);  // puja un nivell jeràrquic
             }
         });
 
