@@ -35,20 +35,22 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         const metodes   = [...new Set(data.map(d => d.metode))];
 
         /* =========================
+           ESTAT DE SELECCIÓ
+        ========================= */
+        let metodeSeleccionat = null;
+
+        /* =========================
            ESCALES
-           - Barres amples
-           - MÉS espai entre barres
         ========================= */
         const x0 = d3.scaleBand()
                      .domain(grupsEdat)
                      .range([0, width])
-                     .paddingInner(0.15); // separació entre grups
+                     .paddingInner(0.15);
 
         const x1 = d3.scaleBand()
                      .domain(metodes)
-                     // reservem una mica menys d’amplada del grup
                      .range([0, x0.bandwidth() * 0.9])
-                     .padding(0.25); // ↑ més espai ENTRE barres
+                     .padding(0.25);
 
         const y = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d.total)])
@@ -85,14 +87,13 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
            .text("Vegades utilitzat");
 
         /* =========================
-           AGRUPACIÓ DE DADES
+           AGRUPACIÓ
         ========================= */
         const grups = g.selectAll(".grup")
             .data(d3.group(data, d => d.grup_edat))
             .enter()
             .append("g")
             .attr("class", "grup")
-            // centrem el subgrup dins del grup principal
             .attr("transform", d => {
                 const offset = (x0.bandwidth() - x1.range()[1]) / 2;
                 return `translate(${x0(d[0]) + offset},0)`;
@@ -101,7 +102,7 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         /* =========================
            BARRES
         ========================= */
-        grups.selectAll("rect")
+        const bars = grups.selectAll("rect")
             .data(d => d[1])
             .enter()
             .append("rect")
@@ -109,24 +110,12 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .attr("y", d => y(d.total))
             .attr("width", x1.bandwidth())
             .attr("height", d => height - y(d.total))
-            .attr("fill", d => colorMap[d.metode] || "#999999")
-            .on("mouseover", function () {
-                d3.selectAll("rect").attr("opacity", 0.3);
-                d3.select(this)
-                  .attr("opacity", 1)
-                  .attr("stroke", "#000")
-                  .attr("stroke-width", 1.5);
-            })
-            .on("mouseout", function () {
-                d3.selectAll("rect")
-                  .attr("opacity", 1)
-                  .attr("stroke", "none");
-            });
+            .attr("fill", d => colorMap[d.metode] || "#999999");
 
         /* =========================
-           ETIQUETES SOBRE BARRES
+           ETIQUETES BARRES
         ========================= */
-        grups.selectAll("text.label")
+        const labels = grups.selectAll("text.label")
             .data(d => d[1])
             .enter()
             .append("text")
@@ -138,16 +127,47 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .text(d => d.total);
 
         /* =========================
-           LLEGENDA
+           FUNCIÓ D’ACTUALITZACIÓ
+        ========================= */
+        function updateHighlight() {
+            bars
+                .attr("opacity", d =>
+                    !metodeSeleccionat || d.metode === metodeSeleccionat ? 1 : 0.2
+                )
+                .attr("stroke", d =>
+                    d.metode === metodeSeleccionat ? "#000" : "none"
+                )
+                .attr("stroke-width", d =>
+                    d.metode === metodeSeleccionat ? 1.5 : 0
+                );
+
+            labels
+                .attr("opacity", d =>
+                    !metodeSeleccionat || d.metode === metodeSeleccionat ? 1 : 0.2
+                );
+        }
+
+        /* =========================
+           LLEGENDA CLICABLE
         ========================= */
         const legend = svg.append("g")
                           .attr("transform", `translate(${margin.left},20)`);
 
         metodes.forEach((m, i) => {
             const gLegend = legend.append("g")
-                .attr("transform", `translate(${i * 180},0)`);
+                .attr("transform", `translate(${i * 180},0)`)
+                .style("cursor", "pointer")
+                .on("click", () => {
+                    metodeSeleccionat = (metodeSeleccionat === m) ? null : m;
+                    updateHighlight();
+
+                    legend.selectAll("rect")
+                        .attr("stroke", d => d === metodeSeleccionat ? "#000" : "none")
+                        .attr("stroke-width", d => d === metodeSeleccionat ? 2 : 0);
+                });
 
             gLegend.append("rect")
+                .datum(m)
                 .attr("width", 20)
                 .attr("height", 20)
                 .attr("fill", colorMap[m] || "#999999");
