@@ -58,17 +58,22 @@ async function circlePackingSocialExclusionRisk() {
 
         const g = svg.append("g");
 
-        // Colors per nivell
+        // Colors per nivell i arrel
         const colorMap = {
-            1: "#a6cee3", // situacio_convivència
-            2: "#b2df8a", // ingressos
+            0: "#e0e0e0",        // arrel/fons: gris clar
+            1: "#a6cee3",         // situacio_convivència
+            2: "#b2df8a",         // ingressos
             3: d => d.data.name === "Sí" ? "#1f77b4" : "#ff7f0e" // financament_public
         };
 
         const nodes = g.selectAll("circle")
             .data(root.descendants())
             .join("circle")
-            .attr("fill", d => d.children ? colorMap[d.depth] : colorMap[3](d))
+            .attr("fill", d => {
+                if (d.depth === 0) return colorMap[0];       // arrel/fons gris
+                if (d.children) return colorMap[d.depth];   // nodes jeràrquics
+                return colorMap[3](d);                      // fulles
+            })
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
             .attr("cursor", "pointer")
