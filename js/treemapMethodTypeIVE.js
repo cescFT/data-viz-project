@@ -16,7 +16,7 @@ function treemapMethodTypeIVE(colorMap) {
             const height = legendHeight + treemapHeight;
 
             // Estat del filtre (SELECCIÓ MÚLTIPLE AMB POSSIBILITAT DE DESELECCIÓ)
-            let activeTypes = new Set(Object.keys(colorMap));
+            let activeTypes = new Set(); // inicialment buit → mostra tot
 
             const svg = d3.select("#treemapMethodTypeIVE")
                 .attr("width", width)
@@ -57,9 +57,8 @@ function treemapMethodTypeIVE(colorMap) {
                         d3.select(this).attr("opacity", 1);
                     }
 
-                    // Si no hi ha cap seleccionat, torna a seleccionar tots
+                    // Si no hi ha cap seleccionat → mostrar tot
                     if (activeTypes.size === 0) {
-                        activeTypes = new Set(Object.keys(colorMap));
                         legendItem.attr("opacity", 1);
                     }
 
@@ -94,10 +93,13 @@ function treemapMethodTypeIVE(colorMap) {
 
                 treemapGroup.selectAll("*").remove();
 
+                // Si activeTypes està buit → mostrar tot
+                const filterSet = activeTypes.size === 0 ? new Set(Object.keys(colorMap)) : activeTypes;
+
                 const filteredHierarchy = {
                     name: "IVE Catalunya",
                     children: Object.entries(data.Types)
-                        .filter(([type]) => activeTypes.has(type))
+                        .filter(([type]) => filterSet.has(type))
                         .map(([type, arr]) => ({
                             name: type,
                             children: arr.map(d => ({
