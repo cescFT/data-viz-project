@@ -15,7 +15,7 @@ function treemapMethodTypeIVE(colorMap) {
             const treemapHeight = 500;
             const height = legendHeight + treemapHeight;
 
-            // Estat del filtre (SELECCIÓ MÚLTIPLE AMB REINICI)
+            // Estat del filtre (SELECCIÓ MÚLTIPLE AMB POSSIBILITAT DE DESELECCIÓ)
             let activeTypes = new Set(Object.keys(colorMap));
 
             const svg = d3.select("#treemapMethodTypeIVE")
@@ -44,18 +44,23 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("class", "legend-item")
                 .attr("transform", (d, i) => `translate(${i * 260},0)`)
                 .style("cursor", "pointer")
+                .attr("opacity", 1)
                 .on("click", function (event, d) {
 
-                    // Reinicia el filtre a només l'element clicat
-                    if (activeTypes.has(d.label) && activeTypes.size === 1) {
-                        // si ja era l'únic seleccionat → desmarca
-                        activeTypes.clear();
+                    if (activeTypes.has(d.label)) {
+                        // si ja estava seleccionat → deselecciona
+                        activeTypes.delete(d.label);
                         d3.select(this).attr("opacity", 0.4);
                     } else {
-                        // selecciona només aquest
-                        activeTypes = new Set([d.label]);
-                        legendItem.attr("opacity", 0.4); // desmarca tots
-                        d3.select(this).attr("opacity", 1); // marca aquest
+                        // afegeix a la selecció
+                        activeTypes.add(d.label);
+                        d3.select(this).attr("opacity", 1);
+                    }
+
+                    // si no hi ha cap seleccionat, torna a seleccionar tots
+                    if (activeTypes.size === 0) {
+                        activeTypes = new Set(Object.keys(colorMap));
+                        legendItem.attr("opacity", 1);
                     }
 
                     updateTreemap();
