@@ -17,7 +17,7 @@ async function loadFilters() {
         filterYears.select2({
             placeholder: "Selecciona anys",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
         rows = runQuery(db, `
@@ -34,7 +34,7 @@ async function loadFilters() {
         filterCenterTypes.select2({
             placeholder: "Selecciona tipus de centre",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
 
@@ -52,7 +52,7 @@ async function loadFilters() {
         filterfinanceType.select2({
             placeholder: "Selecciona tipus de finançament",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
 
@@ -70,7 +70,7 @@ async function loadFilters() {
         filterAgeGroup.select2({
             placeholder: "Selecciona grup d'edat",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
         const filterConvivencia = $("[name='situacioConvivenciaSelect']");
@@ -87,7 +87,7 @@ async function loadFilters() {
         filterConvivencia.select2({
             placeholder: "Selecciona situació de convivència",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
         const sonsSelect = $("[name='sonsSelect']");
@@ -104,7 +104,7 @@ async function loadFilters() {
         sonsSelect.select2({
             placeholder: "Selecciona fills a càrrec",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
         const sonsAlive = $("[name='sonsAlive']");
@@ -121,7 +121,7 @@ async function loadFilters() {
         sonsAlive.select2({
             placeholder: "Selecciona fills vius",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
 
@@ -139,7 +139,7 @@ async function loadFilters() {
         jobSituationSelect.select2({
             placeholder: "Selecciona situació laboral",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
         const housingSituationSelect = $("[name='ingressosSelect']");
@@ -156,7 +156,7 @@ async function loadFilters() {
         housingSituationSelect.select2({
             placeholder: "Selecciona ingressos",
             allowClear: true,
-            width: '200px'
+            width: "100%"
         });
 
     } catch (err) {
