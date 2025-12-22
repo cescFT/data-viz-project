@@ -8,6 +8,8 @@ async function loadFilters() {
             order by any
         `);
 
+        const filtersForm = $("form[name='filters']");
+
         const filterYears = $("[name='years']");
 
         rows.forEach(row => {
@@ -17,7 +19,8 @@ async function loadFilters() {
         filterYears.select2({
             placeholder: "Selecciona anys",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
         rows = runQuery(db, `
@@ -34,7 +37,8 @@ async function loadFilters() {
         filterCenterTypes.select2({
             placeholder: "Selecciona tipus de centre",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
 
@@ -52,7 +56,8 @@ async function loadFilters() {
         filterfinanceType.select2({
             placeholder: "Selecciona tipus de finançament",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
 
@@ -70,7 +75,8 @@ async function loadFilters() {
         filterAgeGroup.select2({
             placeholder: "Selecciona grup d'edat",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
         const filterConvivencia = $("[name='situacioConvivenciaSelect']");
@@ -87,7 +93,8 @@ async function loadFilters() {
         filterConvivencia.select2({
             placeholder: "Selecciona situació de convivència",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
         const sonsSelect = $("[name='sonsSelect']");
@@ -104,7 +111,8 @@ async function loadFilters() {
         sonsSelect.select2({
             placeholder: "Selecciona fills a càrrec",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
         const sonsAlive = $("[name='sonsAlive']");
@@ -121,7 +129,8 @@ async function loadFilters() {
         sonsAlive.select2({
             placeholder: "Selecciona fills vius",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
 
@@ -139,7 +148,8 @@ async function loadFilters() {
         jobSituationSelect.select2({
             placeholder: "Selecciona situació laboral",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
         const housingSituationSelect = $("[name='ingressosSelect']");
@@ -156,7 +166,8 @@ async function loadFilters() {
         housingSituationSelect.select2({
             placeholder: "Selecciona ingressos",
             allowClear: true,
-            width: "100%"
+            width: "100%",
+            dropdownParent: filtersForm
         });
 
     } catch (err) {
