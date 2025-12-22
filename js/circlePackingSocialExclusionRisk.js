@@ -36,8 +36,8 @@ async function circlePackingSocialExclusionRisk() {
         const rootData = buildHierarchy(rows);
 
         // D3 Circle Packing
-        const width = 600;
-        const height = 600;
+        const width = 700;
+        const height = 700;
 
         const root = d3.hierarchy(rootData)
             .sum(d => d.value ? d.value : 0)
@@ -45,7 +45,7 @@ async function circlePackingSocialExclusionRisk() {
 
         const pack = d3.pack()
             .size([width, height])
-            .padding(5);
+            .padding(8); // més separació per evitar sobreposició
 
         pack(root);
 
@@ -68,12 +68,26 @@ async function circlePackingSocialExclusionRisk() {
                 } else {
                     return "#ccc"; // nodes intermedis
                 }
-            });
+            })
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1.5);
 
+        // Mostrem text només si el cercle és prou gran
         node.append("text")
-            .text(d => d.children ? d.data.name : `${d.data.name} (${d.value})`)
-            .style("font-size", d => d.r / 4)
-            .attr("dy", "0.3em");
+            .filter(d => d.r > 20) 
+            .text(d => d.children ? d.data.name : d.data.name)
+            .style("font-size", d => Math.min(2*d.r/5, 12))
+            .attr("dy", "0.3em")
+            .attr("text-anchor", "middle");
+
+        // Tooltip amb informació completa
+        node.append("title")
+            .text(d => d.children ? d.data.name : `${d.data.name}: ${d.value}`);
+
+        // Mostrem l'SVG i ocultem el carregant
+        $("#circlePackingSocialExclusionRisk").show();
+        $("#circlePackingSocialExclusionRisk").closeset('div').find('.fa-spinner').hide();
+
 
     } catch (err) {
         console.error("Error:", err);
