@@ -4,10 +4,10 @@ async function groupedBarChartPerGroupYearAndMethod() {
         const db = await loadSQLiteDatabase("ive_cat.sqlite");
 
         const rows = runQuery(db, `
-            SELECT count(*) as total, grup_edat, metode
+            SELECT count(*) as total, grup_edat, metode_tipus_general as metode
             FROM ive_cat
-            GROUP BY grup_edat, metode
-            ORDER BY grup_edat, metode;
+            GROUP BY grup_edat, metode_tipus_general
+            ORDER BY grup_edat, metode_tipus_general;
         `);
 
         const data = rows;
