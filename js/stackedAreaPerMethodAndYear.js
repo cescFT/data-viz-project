@@ -26,14 +26,17 @@ async function stackedAreaPerMethodAndYear() {
         // ---------- Configuració del SVG inicial ----------
         const legendRectSize = 18;
         const legendSpacing = 5;
-        const legendPadding = 5;
         const maxLegendsPerRow = 5; // categories per fila
 
-        // Calcular quantes files necessitarem
-        const legendRows = Math.ceil(methods.length / maxLegendsPerRow);
-        const marginTop = legendRows * (legendRectSize + legendSpacing) + 20; // 20 px extra
+        // Separar mètodes llargs (>11 lletres) dels curts
+        const shortMethods = methods.filter(d => d.length <= 11);
+        const longMethods = methods.filter(d => d.length > 11);
 
+        // Marges ajustats segons llegenda
+        const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
+        const marginTop = legendRows * (legendRectSize + legendSpacing) + 40; // 40 px extra per fila de llargs
         const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
+
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
@@ -83,13 +86,36 @@ async function stackedAreaPerMethodAndYear() {
             .call(d3.axisLeft(y));
 
         // ---------- Llegenda sobre el gràfic, múltiples files ----------
-        const legendXSpacing = width / maxLegendsPerRow; // espai horitzontal per element
+        const legendXSpacing = width / maxLegendsPerRow;
 
-        methods.forEach((d, i) => {
+        // Dibuixar primers els mètodes curts
+        shortMethods.forEach((d, i) => {
             const row = Math.floor(i / maxLegendsPerRow);
             const col = i % maxLegendsPerRow;
             const xPos = col * legendXSpacing;
             const yPos = -margin.top + row * (legendRectSize + legendSpacing);
+
+            const g = svg.append("g")
+                .attr("class", "legend")
+                .attr("transform", `translate(${xPos},${yPos})`);
+
+            g.append("rect")
+                .attr("width", legendRectSize)
+                .attr("height", legendRectSize)
+                .style("fill", color(d));
+
+            g.append("text")
+                .attr("x", legendRectSize + 5)
+                .attr("y", legendRectSize / 2)
+                .attr("dy", ".35em")
+                .style("text-anchor", "start")
+                .text(d);
+        });
+
+        // Dibuixar els mètodes llargs a sota de totes les altres files
+        longMethods.forEach((d, i) => {
+            const xPos = i * legendXSpacing; // en una sola fila horitzontal
+            const yPos = -margin.top + legendRows * (legendRectSize + legendSpacing) + legendSpacing;
 
             const g = svg.append("g")
                 .attr("class", "legend")
