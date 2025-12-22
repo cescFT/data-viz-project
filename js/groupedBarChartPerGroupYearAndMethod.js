@@ -127,7 +127,7 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .text(d => d.total);
 
         /* =========================
-           FUNCIÓ ACTUALITZACIÓ
+           FUNCIÓ ACTUALITZACIÓ (GRISOS + BORDER)
         ========================= */
         function updateHighlight() {
             const hiHaSeleccio = metodesSeleccionats.size > 0;
@@ -192,6 +192,9 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
                 )
                 .attr("stroke-width", d =>
                     metodesSeleccionats.has(d) ? 2 : 0
+                )
+                .attr("opacity", d =>
+                    metodesSeleccionats.size === 0 || metodesSeleccionats.has(d) ? 1 : 0.3
                 );
         }
 
