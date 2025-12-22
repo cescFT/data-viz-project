@@ -1,6 +1,6 @@
 async function loadFilters() {
     try {
-        const db = await loadSQLiteDatabase("ive_cat.sqlite");
+        const db = await loadSQLiteDatabase("../ive_cat.sqlite");
 
         const rows = runQuery(db, `
             SELECT distinct any
