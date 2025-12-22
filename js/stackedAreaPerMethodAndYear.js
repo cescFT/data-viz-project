@@ -23,18 +23,17 @@ async function stackedAreaPerMethodAndYear() {
             return entry;
         });
 
-        // ---------- Configuració del SVG inicial ----------
+        // ---------- Configuració del SVG ----------
         const legendRectSize = 18;
         const legendSpacing = 5;
-        const maxLegendsPerRow = 5; // categories per fila
+        const maxLegendsPerRow = 5; // categories per fila quadrícula
 
-        // Separar mètodes llargs (>11 lletres) dels curts
+        // Separar mètodes curts i llargs
         const shortMethods = methods.filter(d => d.length <= 11);
         const longMethods = methods.filter(d => d.length > 11);
 
-        // Marges ajustats segons llegenda
         const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
-        const marginTop = legendRows * (legendRectSize + legendSpacing) + 40; // 40 px extra per fila de llargs
+        const marginTop = legendRows * (legendRectSize + legendSpacing) + (longMethods.length * (legendRectSize + legendSpacing)) + 20;
         const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
 
         const width = 800 - margin.left - margin.right;
@@ -85,10 +84,10 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Llegenda sobre el gràfic, múltiples files ----------
+        // ---------- Llegenda ----------
         const legendXSpacing = width / maxLegendsPerRow;
 
-        // Dibuixar primers els mètodes curts
+        // 1. Quadrícula de mètodes curts
         shortMethods.forEach((d, i) => {
             const row = Math.floor(i / maxLegendsPerRow);
             const col = i % maxLegendsPerRow;
@@ -112,10 +111,10 @@ async function stackedAreaPerMethodAndYear() {
                 .text(d);
         });
 
-        // Dibuixar els mètodes llargs a sota de totes les altres files
+        // 2. Línies separades per mètodes llargs
         longMethods.forEach((d, i) => {
-            const xPos = i * legendXSpacing; // en una sola fila horitzontal
-            const yPos = -margin.top + legendRows * (legendRectSize + legendSpacing) + legendSpacing;
+            const xPos = 0; // començem a l'esquerra
+            const yPos = -margin.top + legendRows * (legendRectSize + legendSpacing) + i * (legendRectSize + legendSpacing);
 
             const g = svg.append("g")
                 .attr("class", "legend")
