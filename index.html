@@ -77,6 +77,14 @@
             </div>
         </div>
 
+        <div class="mt-4">
+            <div class="text-center position-relative">
+                <h3>Situació personal de la dona respecte la seva convivència, ingressos i finançament públic</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="circlePackingSocialExclusionRisk" width="600" height="600" style="display: none;"></svg>
+            </div>
+        </div>
+
     </div>
 
 <script src="js/databasesInteraction.js"></script>
@@ -84,6 +92,7 @@
 <script src="js/treemapMethodTypeIVE.js"></script>
 <script src="js/sunburstDiagramNationalityStudy.js"></script>
 <script src="js/groupedBarChartPerGroupYearAndMethod.js"></script>
+<script src="js/circlePackingSocialExclusionRisk.js"></script>
 
 <script>
 
@@ -100,6 +109,7 @@
         treemapMethodTypeIVE(colorMap);
         sunburstDiagramNationalityStudy();
         groupedBarChartPerGroupYearAndMethod(colorMap);
+        circlePackingSocialExclusionRisk();
     });
 
 </script>
