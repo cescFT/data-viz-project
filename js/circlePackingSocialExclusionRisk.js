@@ -62,23 +62,18 @@ async function circlePackingSocialExclusionRisk() {
             0: "#e0e0e0", // arrel/fons gris
             1: "#a6cee3",  // situacio_convivència
             2: "#b2df8a",  // ingressos
-            3: "#ff7f0e"   // finançament_public: un sol color per totes les fulles
+            3: "#ff7f0e"   // finançament_public
         };
 
         const nodes = g.selectAll("circle")
             .data(root.descendants())
             .join("circle")
-            .attr("fill", d => {
-                if (d.depth === 0) return colorMap[0];       // arrel/fons gris
-                if (d.children) return colorMap[d.depth];   // nodes jeràrquics
-                return colorMap[3];                          // fulles: color únic
-            })
+            .attr("fill", d => d.depth === 0 ? colorMap[0] : (d.children ? colorMap[d.depth] : colorMap[3]))
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
-            .attr("cursor", "pointer")
-            .on("click", (event, d) => zoom(d));
+            .attr("cursor", "pointer");
 
-        // Labels amb visibilitat segons radi
+        // Labels amb negreta si és del seu nivell
         const labels = g.selectAll("text")
             .data(root.descendants())
             .join("text")
@@ -86,9 +81,11 @@ async function circlePackingSocialExclusionRisk() {
             .attr("dy", "0.3em")
             .style("pointer-events", "none")
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
-            .text(d => d.data.name)
-            .style("opacity", d => d.r > 20 ? 1 : 0); // només cercles grans
+            .style("font-weight", d => d.r > 20 ? "bold" : "normal") // només grans en negreta
+            .style("opacity", d => d.r > 20 ? 1 : 0)
+            .text(d => d.data.name);
 
+        // Tooltip amb nivell i valor
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
             .style("background", "rgba(0,0,0,0.7)")
@@ -99,8 +96,11 @@ async function circlePackingSocialExclusionRisk() {
             .style("opacity", 0);
 
         nodes.on("mouseover", (event, d) => {
+            const levelName = d.depth === 1 ? "Situació de convivència" :
+                              d.depth === 2 ? "Ingressos" :
+                              d.depth === 3 ? "Finançament públic" : "";
             tooltip.transition().duration(200).style("opacity", 1);
-            tooltip.html(d.children ? d.data.name : `${d.data.name}: ${d.value}`)
+            tooltip.html(d.children ? d.data.name : `${levelName} - ${d.data.name}: ${d.value}`)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
         }).on("mousemove", (event) => {
@@ -110,60 +110,37 @@ async function circlePackingSocialExclusionRisk() {
             tooltip.transition().duration(200).style("opacity", 0);
         });
 
-        let focus = root;
-        let view;
-
         const zoomTo = (v) => {
             const k = width / v[2];
-            view = v;
-
-            labels.attr("transform", d => `translate(${(d.x - v[0]) * k + width / 2},${(d.y - v[1]) * k + height / 2})`);
-            nodes.attr("transform", d => `translate(${(d.x - v[0]) * k + width / 2},${(d.y - v[1]) * k + height / 2})`);
+            labels.attr("transform", d => `translate(${(d.x - v[0]) * k + width/2},${(d.y - v[1]) * k + height/2})`);
+            nodes.attr("transform", d => `translate(${(d.x - v[0]) * k + width/2},${(d.y - v[1]) * k + height/2})`);
             nodes.attr("r", d => d.r * k);
         };
 
-        const zoom = (d) => {
-            focus = d;
+        zoomTo([root.x, root.y, root.r*2]);
 
-            const transition = svg.transition()
-                .duration(750)
-                .tween("zoom", () => {
-                    const i = d3.interpolateZoom(view, [d.x, d.y, d.r * 2]);
-                    return t => zoomTo(i(t));
-                });
-
-            labels.transition(transition)
-                .style("opacity", l => {
-                    const inFocus = l === d || l.parent === d;
-                    return l.r > 10 && inFocus ? 1 : 0; // només en focus i suficientment grans
-                });
-        };
-
-        zoomTo([root.x, root.y, root.r * 2]);
-
+        // Llegenda
         const legendData = [
             { name: "Situació de convivència", color: colorMap[1] },
             { name: "Ingressos", color: colorMap[2] },
             { name: "Finançament públic", color: colorMap[3] }
         ];
 
-        const legend = svg.append("g")
-            .attr("transform", `translate(${width - 180}, 20)`);
-
+        const legend = svg.append("g").attr("transform", `translate(${width-180}, 20)`);
         legend.selectAll("rect")
             .data(legendData)
             .join("rect")
-            .attr("y", (d,i) => i*25)
+            .attr("y", (d,i)=>i*25)
             .attr("width", 18)
             .attr("height", 18)
-            .attr("fill", d => d.color);
+            .attr("fill", d=>d.color);
 
         legend.selectAll("text")
             .data(legendData)
             .join("text")
             .attr("x", 24)
-            .attr("y", (d,i) => i*25 + 14)
-            .text(d => d.name)
+            .attr("y", (d,i)=>i*25+14)
+            .text(d=>d.name)
             .style("font-size", "12px");
 
         $("#circlePackingSocialExclusionRisk").show();
