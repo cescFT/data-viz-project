@@ -1,3 +1,57 @@
-<h1>Holaaaaaa</h1>
+<!DOCTYPE html lang="ca">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+              integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<a href="https://cescft.github.io/data-viz-project/">Torna a la pàgina principal</a>
+<html>
+    <head> 
+        <meta charset="UTF-8">
+        <title>Estudi IVE Catalunya</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+    </head>
+<body>
+    <header class="container-fluid bg-light border-bottom mb-4">
+        <div class="row align-items-center py-3">
+            <div class="col-md-8">
+            <h4 class="mb-1">Visualització de dades</h4>
+            <small class="text-muted">Pràctica Part II </small>
+            <small class="text-muted">Màster en ciències de dades (UOC)</small>
+            </div>
+            <div class="col-md-4 text-md-end fw-semibold">
+                Francesc Ferré Tarrés
+            </div>
+        </div>
+    </header>
+
+    <div class="text-center mb-4">
+        <h1>Estudi de les <b>interrupcions voluntàries d'embaràs</b> a Catalunya</h1>
+    </div>
+
+    <div class="container">
+
+        <div id="catMap" style="width: 100%; height: 500px;" class="mb-4"></div>
+
+        <a href="https://cescft.github.io/data-viz-project/" class="btn btn-link">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Torna a la pàgina principal
+        </a>
+    </div>
+
+<script src="js/cataloniaMapInteraction.js"></script>
+
+<script>
+
+    $(document).ready(function(){
+        cataloniaMapInteraction();
+    });
+
+</script>
+
+</body>
+</html>
