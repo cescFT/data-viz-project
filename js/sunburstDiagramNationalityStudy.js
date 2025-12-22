@@ -22,7 +22,9 @@ async function sunburstDiagramNationalityStudy() {
         --------------------------- */
         const detailedMap = {};
         detailed.forEach(d => {
-            if (!detailedMap[d.primera_nacionalitat]) detailedMap[d.primera_nacionalitat] = [];
+            if (!detailedMap[d.primera_nacionalitat]) {
+                detailedMap[d.primera_nacionalitat] = [];
+            }
             detailedMap[d.primera_nacionalitat].push({
                 name: d.situacio_laboral,
                 value: d.total
@@ -51,6 +53,9 @@ async function sunburstDiagramNationalityStudy() {
             "Espanyola": { base: "#5B8FF9", light: "#8CB3FF" },
             "No Espanyola": { base: "#F6BD16", light: "#FFD666" }
         };
+
+        // ESTAT DE SELECCIÓ MÚLTIPLE (LLEGENDA)
+        const activeNationalities = new Set(Object.keys(colorScale));
 
         const svg = d3.select("#sunburstNationalityStudy");
         svg.selectAll("*").remove();
@@ -81,7 +86,7 @@ async function sunburstDiagramNationalityStudy() {
         /* ---------------------------
            Arcs
         --------------------------- */
-        g.selectAll("path")
+        const paths = g.selectAll("path")
             .data(root.descendants().filter(d => d.depth > 0))
             .enter()
             .append("path")
@@ -95,6 +100,22 @@ async function sunburstDiagramNationalityStudy() {
                 return "#ccc";
             })
             .attr("stroke", "#fff");
+
+        /* ---------------------------
+           Funció d'actualització visual segons selecció
+        --------------------------- */
+        function updateVisibility() {
+            paths
+                .transition()
+                .duration(200)
+                .attr("opacity", d => {
+                    const natNode = d.depth === 1
+                        ? d
+                        : d.ancestors().find(a => a.depth === 1);
+
+                    return activeNationalities.has(natNode.data.name) ? 1 : 0.2;
+                });
+        }
 
         /* ---------------------------
            Text interior (nacionalitat + percentatge)
@@ -138,16 +159,15 @@ async function sunburstDiagramNationalityStudy() {
             .text(d => {
                 const parentValue = d.parent.value;
                 const percent = ((d.value / parentValue) * 100).toFixed(1);
-                let nameOfLabourStatement = d.data.name;
-                if (nameOfLabourStatement === "Aturada o a la recerca de la primera feina remunerada") {
-                    nameOfLabourStatement = "Aturada";
+                let name = d.data.name;
+                if (name === "Aturada o a la recerca de la primera feina remunerada") {
+                    name = "Aturada";
                 }
-
-                return `${nameOfLabourStatement} (${percent}%)`;
+                return `${name} (${percent}%)`;
             });
 
         /* ---------------------------
-           Llegenda (només nacionalitats)
+           Llegenda (clicable + multiselecció)
         --------------------------- */
         const legendData = [
             { label: "Espanyola", color: colorScale["Espanyola"].base },
@@ -157,48 +177,54 @@ async function sunburstDiagramNationalityStudy() {
         const legend = svg.append("g")
             .attr("transform", "translate(20,20)");
 
-        legend.selectAll("g")
+        const legendItems = legend.selectAll("g")
             .data(legendData)
             .enter()
             .append("g")
             .attr("transform", (d, i) => `translate(0, ${i * 20})`)
-            .each(function (d) {
-                d3.select(this)
-                    .append("rect")
-                    .attr("width", 14)
-                    .attr("height", 14)
-                    .attr("fill", d.color);
+            .style("cursor", "pointer")
+            .on("click", function (event, d) {
 
-                d3.select(this)
-                    .append("text")
-                    .attr("x", 20)
-                    .attr("y", 12)
-                    .text(d.label)
-                    .attr("font-size", "12px");
+                if (activeNationalities.has(d.label)) {
+                    activeNationalities.delete(d.label);
+                    d3.select(this).attr("opacity", 0.4);
+                } else {
+                    activeNationalities.add(d.label);
+                    d3.select(this).attr("opacity", 1);
+                }
+
+                updateVisibility();
             });
 
+        legendItems.append("rect")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("fill", d => d.color);
+
+        legendItems.append("text")
+            .attr("x", 20)
+            .attr("y", 12)
+            .text(d => d.label)
+            .attr("font-size", "12px");
+
         /* ---------------------------
-           Hover llegenda per ressaltar arcs
+           Hover llegenda (temporal)
         --------------------------- */
-        legend.selectAll("g")
-            .on("mouseover", function(event, d) {
-                g.selectAll("path")
+        legendItems
+            .on("mouseover", function (event, d) {
+                paths
                     .transition()
-                    .duration(200)
+                    .duration(150)
                     .attr("opacity", p => {
-                        if (p.depth === 1) return p.data.name === d.label ? 1 : 0.2;
-                        if (p.depth === 2) {
-                            const natNode = p.ancestors().find(a => a.depth === 1);
-                            return natNode.data.name === d.label ? 1 : 0.2;
-                        }
-                        return 1;
+                        const natNode = p.depth === 1
+                            ? p
+                            : p.ancestors().find(a => a.depth === 1);
+
+                        return natNode.data.name === d.label ? 1 : 0.2;
                     });
             })
-            .on("mouseout", function() {
-                g.selectAll("path")
-                    .transition()
-                    .duration(200)
-                    .attr("opacity", 1);
+            .on("mouseout", function () {
+                updateVisibility();
             });
 
         /* ---------------------------
