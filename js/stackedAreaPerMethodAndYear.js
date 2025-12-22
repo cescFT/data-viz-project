@@ -20,6 +20,7 @@ async function stackedAreaPerMethodAndYear() {
             return entry;
         });
 
+        // ---------- Configuració SVG i llegenda ----------
         const legendRectSize = 18;
         const legendSpacing = 5;
         const maxLegendsPerRow = 5;
@@ -68,6 +69,7 @@ async function stackedAreaPerMethodAndYear() {
             .attr("fill", d => color(d.key))
             .attr("d", area);
 
+        // Eixos
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickFormat(d3.format("d")));
@@ -75,85 +77,62 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Llegenda clicable ----------
+        // ---------- Llegenda clicable múltiple ----------
         const legendXSpacing = width / maxLegendsPerRow;
         let selectedMethods = new Set();
 
         function updateChart() {
-            const keysToShow = selectedMethods.size > 0 ? Array.from(selectedMethods) : methods;
-
             // Manté tots els paths amb els colors originals, només modifica l'opacitat
             areas.transition().duration(500)
                 .style("opacity", d => selectedMethods.size === 0 || selectedMethods.has(d.key) ? 1 : 0.2);
 
-            // actualitzar color text llegenda
+            // Actualitzar color del text de la llegenda
             svg.selectAll(".legend text")
                 .transition().duration(300)
                 .style("fill", d => selectedMethods.size === 0 || selectedMethods.has(d) ? "#000" : "#ccc");
         }
 
-        // Dibuixar llegenda curts
-        shortMethods.forEach((d, i) => {
-            const row = Math.floor(i / maxLegendsPerRow);
-            const col = i % maxLegendsPerRow;
-            const xPos = col * legendXSpacing;
-            const yPos = -margin.top + row * (legendRectSize + legendSpacing);
+        // Funció comuna per dibuixar llegenda
+        function drawLegend(methodArray, startY) {
+            methodArray.forEach((d, i) => {
+                const row = Math.floor(i / maxLegendsPerRow);
+                const col = i % maxLegendsPerRow;
+                const xPos = col * legendXSpacing;
+                const yPos = startY + row * (legendRectSize + legendSpacing);
 
-            const g = svg.append("g")
-                .attr("class", "legend")
-                .attr("transform", `translate(${xPos},${yPos})`)
-                .style("cursor", "pointer")
-                .on("click", () => {
-                    if (selectedMethods.has(d)) selectedMethods.delete(d);
-                    else selectedMethods.add(d);
-                    updateChart();
-                });
+                const g = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${xPos},${yPos})`)
+                    .style("cursor", "pointer")
+                    .on("click", () => {
+                        if (selectedMethods.has(d)) selectedMethods.delete(d);
+                        else selectedMethods.add(d);
+                        updateChart();
+                    });
 
-            g.append("rect")
-                .attr("width", legendRectSize)
-                .attr("height", legendRectSize)
-                .style("fill", color(d))
-                .style("stroke", "#000")
-                .style("stroke-width", 1);
+                g.append("rect")
+                    .attr("width", legendRectSize)
+                    .attr("height", legendRectSize)
+                    .style("fill", color(d))
+                    .style("stroke", "#000")
+                    .style("stroke-width", 1);
 
-            g.append("text")
-                .attr("x", legendRectSize + 5)
-                .attr("y", legendRectSize / 2)
-                .attr("dy", ".35em")
-                .style("text-anchor", "start")
-                .text(d);
-        });
+                g.append("text")
+                    .attr("x", legendRectSize + 5)
+                    .attr("y", legendRectSize / 2)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "start")
+                    .text(d);
+            });
+        }
 
-        // Dibuixar llegenda llargs
-        longMethods.forEach((d, i) => {
-            const xPos = 0;
-            const yPos = -margin.top + legendRows * (legendRectSize + legendSpacing) + i * (legendRectSize + legendSpacing);
+        // Llegenda curts (en quadrícula)
+        drawLegend(shortMethods, -margin.top);
 
-            const g = svg.append("g")
-                .attr("class", "legend")
-                .attr("transform", `translate(${xPos},${yPos})`)
-                .style("cursor", "pointer")
-                .on("click", () => {
-                    if (selectedMethods.has(d)) selectedMethods.delete(d);
-                    else selectedMethods.add(d);
-                    updateChart();
-                });
+        // Llegenda llargs (en línia separada)
+        drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing));
 
-            g.append("rect")
-                .attr("width", legendRectSize)
-                .attr("height", legendRectSize)
-                .style("fill", color(d))
-                .style("stroke", "#000")
-                .style("stroke-width", 1);
-
-            g.append("text")
-                .attr("x", legendRectSize + 5)
-                .attr("y", legendRectSize / 2)
-                .attr("dy", ".35em")
-                .style("text-anchor", "start")
-                .text(d);
-        });
-
+        // Mostrar SVG i amagar spinner
         $("#stackedAreaPerMethodAndYear").show();
         $("#stackedAreaPerMethodAndYear").closest('div').find('.fa-spinner').hide();
 
