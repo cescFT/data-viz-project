@@ -208,26 +208,6 @@ async function sunburstDiagramNationalityStudy() {
             .attr("font-size", "12px");
 
         /* ---------------------------
-           Hover llegenda (temporal)
-        --------------------------- */
-        legendItems
-            .on("mouseover", function (event, d) {
-                paths
-                    .transition()
-                    .duration(150)
-                    .attr("opacity", p => {
-                        const natNode = p.depth === 1
-                            ? p
-                            : p.ancestors().find(a => a.depth === 1);
-
-                        return natNode.data.name === d.label ? 1 : 0.2;
-                    });
-            })
-            .on("mouseout", function () {
-                updateVisibility();
-            });
-
-        /* ---------------------------
            Mostrar
         --------------------------- */
         $("#sunburstNationalityStudy").show();
