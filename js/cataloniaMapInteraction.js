@@ -31,3 +31,28 @@ function loadCataloniaMapInteraction() {
         })
         .catch(err => console.error('Error carregant GeoJSON comarques:', err));
 }
+
+function styleComarcaTest(nomComarca) {
+    return function (feature) {
+        return {
+            fillColor: feature.properties.NOMCOMARCA === nomComarca
+                ? '#ff0000'
+                : '#cccccc',
+            weight: 1,
+            color: '#555',
+            fillOpacity: 0.6
+        };
+    };
+}
+
+
+function executeFilters() {
+    fetch('../static-data/comarques_catalunya.geojson')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: styleComarcaTest('Alt Camp')
+            }).addTo(map);
+        })
+        .catch(err => console.error('Error carregant GeoJSON comarques:', err));
+}
