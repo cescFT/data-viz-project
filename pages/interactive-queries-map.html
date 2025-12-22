@@ -40,32 +40,44 @@
 
         <div class="mb-4">
             <form name="filters">
-                <select name="years" multiple="multiple">
-                </select>
-
-                <select name="centerType" multiple="multiple">
-                </select>
-
-                <select name="finantialType" multiple="multiple">
-                </select>
-
-                <select name="ageGroupSelect" multiple="multiple">
-                </select>
-
-                <select name="situacioConvivenciaSelect" multiple="multiple">
-                </select>
-
-                <select name="sonsSelect" multiple="multiple">
-                </select>
-
-                <select name="sonsAlive" multiple="multiple">
-                </select>
-
-                <select name="jobSituationSelect" multiple="multiple">
-                </select>
-
-                <select name="ingressosSelect" multiple="multiple">
-                </select>
+                <div class="d-flex">
+                    <div>
+                        <label for="year">Anys</label>
+                        <select name="years" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="centerType">Tipus de centre</label>
+                        <select name="centerType" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="finantialType">Tipus de finançament</label>
+                        <select name="finantialType" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="ageGroupSelect">Grup d'edat</label>
+                        <select name="ageGroupSelect" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="situacioConvivenciaSelect">Situació de convivència</label>
+                        <select name="situacioConvivenciaSelect" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="sonsSelect">Nombre de fills</label>
+                        <select name="sonsSelect" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="sonsAlive">Nombre de fills vius</label>
+                        <select name="sonsAlive" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="jobSituationSelect">Situació laboral</label>
+                        <select name="jobSituationSelect" multiple="multiple"></select>
+                    </div>
+                    <div>
+                        <label for="ingressosSelect">Ingressos mensuals</label>
+                        <select name="ingressosSelect" multiple="multiple"></select>
+                    </div>
+                </div>
 
                 <button type="button" data-action="submit"> Cercar </button>
             </form>
