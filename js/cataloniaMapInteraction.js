@@ -1,4 +1,4 @@
-function loadCataloniaMapInteraction() {
+function loadCataloniaMapInteraction(map) {
 
     // Estil general de les comarques
     function styleComarques(feature) {
