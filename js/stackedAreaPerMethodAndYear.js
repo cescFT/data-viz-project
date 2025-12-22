@@ -29,8 +29,8 @@ async function stackedAreaPerMethodAndYear() {
         const maxLegendsPerRow = 5; // categories per fila quadrícula
 
         // Separar mètodes curts i llargs
-        const shortMethods = methods.filter(d => d.length <= 11);
-        const longMethods = methods.filter(d => d.length > 11);
+        const shortMethods = methods.filter(d => d.length <= 15);
+        const longMethods = methods.filter(d => d.length > 15);
 
         const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
         const marginTop = legendRows * (legendRectSize + legendSpacing) + (longMethods.length * (legendRectSize + legendSpacing)) + 20;
