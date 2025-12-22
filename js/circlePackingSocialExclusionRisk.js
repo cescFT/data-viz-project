@@ -8,20 +8,19 @@ async function circlePackingSocialExclusionRisk() {
             GROUP BY situacio_convivència, ingressos, financament_public
         `);
 
-        // Transformem les dades a jerarquia
         function buildHierarchy(data) {
-            const root = {name: "Arrel", children: []};
+            const root = { name: "Arrel", children: [] };
             const situacions = d3.group(data, d => d.situacio_convivència);
 
             situacions.forEach((situData, situKey) => {
-                const situNode = {name: situKey, children: []};
+                const situNode = { name: situKey, children: [] };
                 const ingressosMap = d3.group(situData, d => d.ingressos);
 
                 ingressosMap.forEach((ingData, ingKey) => {
-                    const ingNode = {name: ingKey, children: []};
+                    const ingNode = { name: ingKey, children: [] };
 
                     ingData.forEach(d => {
-                        ingNode.children.push({name: d.financament_public, value: d.count});
+                        ingNode.children.push({ name: d.financament_public, value: d.count });
                     });
 
                     situNode.children.push(ingNode);
@@ -35,59 +34,105 @@ async function circlePackingSocialExclusionRisk() {
 
         const rootData = buildHierarchy(rows);
 
-        // D3 Circle Packing
         const width = 700;
         const height = 700;
 
         const root = d3.hierarchy(rootData)
-            .sum(d => d.value ? d.value : 0)
-            .sort((a, b) => b.value - a.value);
+            .sum(d => d.value || 0)
+            .sort((a, b) => (b.value || 0) - (a.value || 0));
 
         const pack = d3.pack()
             .size([width, height])
-            .padding(8); // més separació per evitar sobreposició
+            .padding(5);
 
         pack(root);
 
-        // Afegim SVG al body
-        const svg = d3.select("body")
+        const svgContainer = d3.select("#circlePackingSocialExclusionRisk");
+        svgContainer.selectAll("*").remove();
+        const svg = svgContainer
             .append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+            .style("font", "10px sans-serif");
 
-        const node = svg.selectAll("g")
+        const g = svg.append("g");
+
+        const nodes = g.selectAll("circle")
             .data(root.descendants())
-            .join("g")
-            .attr("transform", d => `translate(${d.x},${d.y})`);
-
-        node.append("circle")
-            .attr("r", d => d.r)
+            .join("circle")
             .attr("fill", d => {
-                if (!d.children) {
-                    return d.data.name === "Sí" ? "#1f77b4" : "#ff7f0e"; // fulles
-                } else {
-                    return "#ccc"; // nodes intermedis
-                }
+                if (!d.children) return d.data.name === "Sí" ? "#1f77b4" : "#ff7f0e";
+                else if (d.depth === 1) return "#a6cee3";
+                else if (d.depth === 2) return "#b2df8a";
+                else return "#ccc";
             })
             .attr("stroke", "#fff")
-            .attr("stroke-width", 1.5);
+            .attr("stroke-width", 1.5)
+            .attr("cursor", "pointer")
+            .on("click", (event, d) => zoom(d));
 
-        // Mostrem text només si el cercle és prou gran
-        node.append("text")
-            .filter(d => d.r > 20) 
-            .text(d => d.children ? d.data.name : d.data.name)
-            .style("font-size", d => Math.min(2*d.r/5, 12))
+        const labels = g.selectAll("text")
+            .data(root.descendants())
+            .join("text")
+            .attr("text-anchor", "middle")
             .attr("dy", "0.3em")
-            .attr("text-anchor", "middle");
+            .style("pointer-events", "none")
+            .style("font-size", d => Math.min(2 * d.r / 5, 12))
+            .text(d => d.data.name)
+            .style("opacity", d => d.parent === root ? 1 : 0); // només root visibles inicialment
 
-        // Tooltip amb informació completa
-        node.append("title")
-            .text(d => d.children ? d.data.name : `${d.data.name}: ${d.value}`);
+        const tooltip = d3.select("body").append("div")
+            .style("position", "absolute")
+            .style("background", "rgba(0,0,0,0.7)")
+            .style("color", "#fff")
+            .style("padding", "5px 10px")
+            .style("border-radius", "4px")
+            .style("pointer-events", "none")
+            .style("opacity", 0);
 
-        // Mostrem l'SVG i ocultem el carregant
+        nodes.on("mouseover", (event, d) => {
+            tooltip.transition().duration(200).style("opacity", 1);
+            tooltip.html(d.children ? d.data.name : `${d.data.name}: ${d.value}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 20) + "px");
+        }).on("mousemove", (event) => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY - 20) + "px");
+        }).on("mouseout", () => {
+            tooltip.transition().duration(200).style("opacity", 0);
+        });
+
+        let focus = root;
+        let view;
+
+        const zoomTo = (v) => {
+            const k = width / v[2];
+
+            view = v;
+
+            labels.attr("transform", d => `translate(${(d.x - v[0]) * k + width / 2},${(d.y - v[1]) * k + height / 2})`);
+            nodes.attr("transform", d => `translate(${(d.x - v[0]) * k + width / 2},${(d.y - v[1]) * k + height / 2})`);
+            nodes.attr("r", d => d.r * k);
+        };
+
+        const zoom = (d) => {
+            focus = d;
+
+            const transition = svg.transition()
+                .duration(750)
+                .tween("zoom", () => {
+                    const i = d3.interpolateZoom(view, [d.x, d.y, d.r * 2]);
+                    return t => zoomTo(i(t));
+                });
+
+            labels.transition(transition)
+                .style("opacity", l => l.parent === d || l === d ? 1 : 0);
+        };
+
+        zoomTo([root.x, root.y, root.r * 2]);
+
         $("#circlePackingSocialExclusionRisk").show();
-        $("#circlePackingSocialExclusionRisk").closeset('div').find('.fa-spinner').hide();
-
+        $("#circlePackingSocialExclusionRisk").closest('div').find('.fa-spinner').hide();
 
     } catch (err) {
         console.error("Error:", err);
