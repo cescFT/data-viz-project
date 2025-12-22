@@ -122,15 +122,15 @@ async function circlePackingSocialExclusionRisk() {
 
             labels.transition(transition)
                 .style("opacity", l => {
-                    if (l.depth === 3) return 1;                  // fulles sempre visibles
-                    if (l.parent === d && l.depth < 3) return 1;  // nivell actual visible
-                    if (d === focus && l.parent !== d) return 0;  // altres desapareixen
-                    return l.style.opacity;                       // si ja era visible, manté
+                    if (!d.children) return 1;                // fulles sempre visibles
+                    if (l.parent === d) return 1;             // fills del node focus visibles
+                    if (l === d) return 1;                    // node focus visible
+                    return 0;                                 // la resta desapareix
                 });
         };
 
         nodes.on("click", (event, d) => {
-            zoom(d);  // si cliques al mateix node, manté el text
+            zoom(d);
         });
 
         zoom(root);
