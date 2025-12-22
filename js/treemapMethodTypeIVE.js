@@ -156,3 +156,17 @@ function treemapMethodTypeIVE(colorMap) {
                     .attr("y", 16)
                     .text(d => d.data.name)
                     .attr("font-size", "11px")
+                    .attr("fill", "#fff")
+                    .attr("pointer-events", "none");
+            }
+
+            /* ============================
+               5. Render inicial
+            ============================ */
+            updateTreemap();
+
+            $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
+            $("#treemapMethodTypeIVE").show();
+        })
+        .catch(error => console.error(error));
+}
