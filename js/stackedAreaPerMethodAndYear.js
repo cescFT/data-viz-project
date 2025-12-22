@@ -1,6 +1,5 @@
 async function stackedAreaPerMethodAndYear() {
     try {
-        // Carrega la BD
         const db = await loadSQLiteDatabase("ive_cat.sqlite");
         const rows = runQuery(db, `
             SELECT COUNT(*) as total, metode, any
@@ -9,11 +8,9 @@ async function stackedAreaPerMethodAndYear() {
             order by any
         `);
 
-        // Extreure anys i mètodes únics
         const years = Array.from(new Set(rows.map(d => d.any))).sort((a,b) => a-b);
         const methods = Array.from(new Set(rows.map(d => d.metode)));
 
-        // Reorganitzar les dades per any
         const dataByYear = years.map(year => {
             const entry = {any: year};
             methods.forEach(m => {
@@ -23,19 +20,16 @@ async function stackedAreaPerMethodAndYear() {
             return entry;
         });
 
-        // ---------- Configuració del SVG ----------
         const legendRectSize = 18;
         const legendSpacing = 5;
-        const maxLegendsPerRow = 5; // categories per fila quadrícula
+        const maxLegendsPerRow = 5;
 
-        // Separar mètodes curts i llargs
         const shortMethods = methods.filter(d => d.length <= 20);
         const longMethods = methods.filter(d => d.length > 20);
 
         const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
         const marginTop = legendRows * (legendRectSize + legendSpacing) + (longMethods.length * (legendRectSize + legendSpacing)) + 20;
         const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
-
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
@@ -46,7 +40,6 @@ async function stackedAreaPerMethodAndYear() {
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Escalats
         const x = d3.scaleLinear()
             .domain(d3.extent(years))
             .range([0, width]);
@@ -59,24 +52,22 @@ async function stackedAreaPerMethodAndYear() {
             .domain(methods)
             .range(d3.schemeCategory10);
 
-        // Crear stack
         const stack = d3.stack().keys(methods);
-        const stackedData = stack(dataByYear);
+        let stackedData = stack(dataByYear);
 
-        // Àrea
         const area = d3.area()
             .x(d => x(d.data.any))
             .y0(d => y(d[0]))
             .y1(d => y(d[1]));
 
-        svg.selectAll("path")
+        // ---------- Dibuixar àrees ----------
+        const areas = svg.selectAll("path")
             .data(stackedData)
             .enter()
             .append("path")
             .attr("fill", d => color(d.key))
             .attr("d", area);
 
-        // Eixos
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickFormat(d3.format("d")));
@@ -84,10 +75,28 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Llegenda ----------
+        // ---------- Llegenda clicable ----------
         const legendXSpacing = width / maxLegendsPerRow;
+        let selectedMethods = new Set();
 
-        // 1. Quadrícula de mètodes curts
+        function updateChart() {
+            const keysToShow = selectedMethods.size > 0 ? Array.from(selectedMethods) : methods;
+
+            // recalcular stack només amb les seleccionades
+            const filteredStack = d3.stack().keys(methods)(dataByYear);
+
+            areas.data(filteredStack)
+                .transition().duration(500)
+                .attr("d", area)
+                .attr("fill", d => selectedMethods.size === 0 || selectedMethods.has(d.key) ? color(d.key) : "#ccc");
+            
+            // actualitzar color llegenda
+            svg.selectAll(".legend rect")
+                .transition().duration(300)
+                .style("fill", d => selectedMethods.size === 0 || selectedMethods.has(d) ? color(d) : "#ccc");
+        }
+
+        // Dibuixar llegenda curts
         shortMethods.forEach((d, i) => {
             const row = Math.floor(i / maxLegendsPerRow);
             const col = i % maxLegendsPerRow;
@@ -96,14 +105,20 @@ async function stackedAreaPerMethodAndYear() {
 
             const g = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${xPos},${yPos})`);
+                .attr("transform", `translate(${xPos},${yPos})`)
+                .style("cursor", "pointer")
+                .on("click", () => {
+                    if (selectedMethods.has(d)) selectedMethods.delete(d);
+                    else selectedMethods.add(d);
+                    updateChart();
+                });
 
             g.append("rect")
                 .attr("width", legendRectSize)
                 .attr("height", legendRectSize)
                 .style("fill", color(d))
-                .style("stroke", "#000")        // <-- borde negre
-                .style("stroke-width", 1);      // <-- ample del borde
+                .style("stroke", "#000")
+                .style("stroke-width", 1);
 
             g.append("text")
                 .attr("x", legendRectSize + 5)
@@ -113,21 +128,27 @@ async function stackedAreaPerMethodAndYear() {
                 .text(d);
         });
 
-        // 2. Línies separades per mètodes llargs
+        // Dibuixar llegenda llargs
         longMethods.forEach((d, i) => {
-            const xPos = 0; // començem a l'esquerra
+            const xPos = 0;
             const yPos = -margin.top + legendRows * (legendRectSize + legendSpacing) + i * (legendRectSize + legendSpacing);
 
             const g = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${xPos},${yPos})`);
+                .attr("transform", `translate(${xPos},${yPos})`)
+                .style("cursor", "pointer")
+                .on("click", () => {
+                    if (selectedMethods.has(d)) selectedMethods.delete(d);
+                    else selectedMethods.add(d);
+                    updateChart();
+                });
 
             g.append("rect")
                 .attr("width", legendRectSize)
                 .attr("height", legendRectSize)
                 .style("fill", color(d))
-                .style("stroke", "#000")        // <-- borde negre
-                .style("stroke-width", 1);      // <-- ample del borde
+                .style("stroke", "#000")
+                .style("stroke-width", 1);
 
             g.append("text")
                 .attr("x", legendRectSize + 5)
@@ -137,7 +158,6 @@ async function stackedAreaPerMethodAndYear() {
                 .text(d);
         });
 
-        // Mostrar SVG i amagar spinner
         $("#stackedAreaPerMethodAndYear").show();
         $("#stackedAreaPerMethodAndYear").closest('div').find('.fa-spinner').hide();
 
