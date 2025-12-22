@@ -78,6 +78,7 @@ async function circlePackingSocialExclusionRisk() {
             .attr("cursor", "pointer")
             .on("click", (event, d) => zoom(d));
 
+        // Labels amb visibilitat segons radi
         const labels = g.selectAll("text")
             .data(root.descendants())
             .join("text")
@@ -86,7 +87,7 @@ async function circlePackingSocialExclusionRisk() {
             .style("pointer-events", "none")
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
             .text(d => d.data.name)
-            .style("opacity", d => d.parent === root ? 1 : 0);
+            .style("opacity", d => d.r > 20 ? 1 : 0); // només cercles grans
 
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
@@ -132,7 +133,10 @@ async function circlePackingSocialExclusionRisk() {
                 });
 
             labels.transition(transition)
-                .style("opacity", l => l.parent === d || l === d ? 1 : 0);
+                .style("opacity", l => {
+                    const inFocus = l === d || l.parent === d;
+                    return l.r > 10 && inFocus ? 1 : 0; // només en focus i suficientment grans
+                });
         };
 
         zoomTo([root.x, root.y, root.r * 2]);
