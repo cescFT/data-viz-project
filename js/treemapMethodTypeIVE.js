@@ -16,7 +16,7 @@ function treemapMethodTypeIVE(colorMap) {
             const height = legendHeight + treemapHeight;
 
             // Estat del filtre (SELECCIÓ MÚLTIPLE AMB POSSIBILITAT DE DESELECCIÓ)
-            let activeTypes = new Set(); // inicialment buit → mostra tot
+            let activeTypes = new Set(); // buit → mostra tot
 
             const svg = d3.select("#treemapMethodTypeIVE")
                 .attr("width", width)
@@ -47,20 +47,26 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("opacity", 1)
                 .on("click", function (event, d) {
 
+                    // Toggle de selecció
                     if (activeTypes.has(d.label)) {
-                        // Si ja estava seleccionat → deselecciona
-                        activeTypes.delete(d.label);
-                        d3.select(this).attr("opacity", 0.4);
+                        activeTypes.delete(d.label); // deselecciona
                     } else {
-                        // Si no estava seleccionat → selecciona
-                        activeTypes.add(d.label);
-                        d3.select(this).attr("opacity", 1);
+                        activeTypes.add(d.label); // selecciona
                     }
 
-                    // Si no hi ha cap seleccionat → mostrar tot
+                    // Si no hi ha cap seleccionat → mostra tot
                     if (activeTypes.size === 0) {
-                        legendItem.attr("opacity", 1);
+                        activeTypes = new Set(); // buit → mostrar tot
                     }
+
+                    // Actualitzar opacitat de la llegenda
+                    legendItem.each(function(ld) {
+                        if (activeTypes.size === 0) {
+                            d3.select(this).attr("opacity", 1); // tot normal
+                        } else {
+                            d3.select(this).attr("opacity", activeTypes.has(ld.label) ? 1 : 0.3); // gris els no seleccionats
+                        }
+                    });
 
                     updateTreemap();
                 });
