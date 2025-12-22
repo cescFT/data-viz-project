@@ -104,10 +104,10 @@ async function stackedAreaPerMethodAndYear() {
 
         function drawLegend(methodArray, startY, isSingleLine = false) {
             methodArray.forEach((d, i) => {
-                const row = isSingleLine ? 0 : Math.floor(i / maxLegendsPerRow);
-                const col = isSingleLine ? i : i % maxLegendsPerRow;
-                const xPos = isSingleLine
-                    ? (width / (methodArray.length + 1)) * (i + 0.5) - legendRectSize / 2
+                const row = isSingleLine ? i : Math.floor(i / maxLegendsPerRow);
+                const col = isSingleLine ? 0 : i % maxLegendsPerRow;
+                const xPos = isSingleLine 
+                    ? 0 
                     : col * legendXSpacing;
                 const yPos = startY + row * (legendRectSize + legendSpacing);
 
@@ -145,7 +145,7 @@ async function stackedAreaPerMethodAndYear() {
         // Curts: quadrícula
         drawLegend(shortMethods, -margin.top);
 
-        // Llargs: una sola línia
+        // Llargs: una sola línia, cadascun en fila separada
         drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing), true);
 
         // Mostrar SVG i amagar spinner
