@@ -28,12 +28,11 @@ async function stackedAreaPerMethodAndYear() {
         const longMethods = methods.filter(d => d.length > 20);
 
         const legendRows = Math.ceil(shortMethods.length / maxLegendsPerRow);
-        const marginTop = legendRows * (legendRectSize + legendSpacing) + (longMethods.length * (legendRectSize + legendSpacing)) + 20;
+        const marginTop = legendRows * (legendRectSize + legendSpacing) + 50; // reservem espai per longMethods
         const margin = {top: marginTop, right: 30, bottom: 50, left: 60};
         const width = 800 - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
-        // Netejar si ja existia un SVG
         d3.select("#stackedAreaPerMethodAndYear").selectAll("*").remove();
 
         const svg = d3.select("#stackedAreaPerMethodAndYear")
@@ -63,7 +62,6 @@ async function stackedAreaPerMethodAndYear() {
             .y0(d => y(d[0]))
             .y1(d => y(d[1]));
 
-        // ---------- Dibuixar àrees ----------
         const areas = svg.selectAll(".metode-path")
             .data(stackedData)
             .enter()
@@ -72,7 +70,6 @@ async function stackedAreaPerMethodAndYear() {
             .attr("fill", d => color(d.key))
             .attr("d", area);
 
-        // Eixos
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickFormat(d3.format("d")));
@@ -80,30 +77,20 @@ async function stackedAreaPerMethodAndYear() {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // ---------- Lògica d'Interactivitat ----------
         let selectedMethods = new Set();
 
         function updateChart() {
             const isAnySelected = selectedMethods.size > 0;
 
-            // Actualitzar àrees: Color original si està triat, gris si no (o tots colors si res triat)
             areas.transition().duration(500)
-                .attr("fill", d => {
-                    if (!isAnySelected) return color(d.key);
-                    return selectedMethods.has(d.key) ? color(d.key) : "#D3D3D3";
-                })
-                .style("opacity", d => {
-                    if (!isAnySelected) return 1;
-                    return selectedMethods.has(d.key) ? 1 : 0.6;
-                });
+                .attr("fill", d => !isAnySelected || selectedMethods.has(d.key) ? color(d.key) : "#D3D3D3")
+                .style("opacity", d => !isAnySelected || selectedMethods.has(d.key) ? 1 : 0.6);
 
-            // Actualitzar quadrats de la llegenda: vora de color i gruixuda
             svg.selectAll(".legend-rect")
                 .transition().duration(300)
-                .style("stroke", d => selectedMethods.has(d) ? color(d) : "#000")
+                .style("stroke", "#000")
                 .style("stroke-width", d => selectedMethods.has(d) ? 3 : 1);
 
-            // Actualitzar text de la llegenda
             svg.selectAll(".legend-text")
                 .transition().duration(300)
                 .style("fill", d => !isAnySelected || selectedMethods.has(d) ? "#000" : "#aaa")
@@ -112,9 +99,9 @@ async function stackedAreaPerMethodAndYear() {
 
         const legendXSpacing = width / maxLegendsPerRow;
 
-        function drawLegend(methodArray, startY) {
+        function drawLegend(methodArray, startY, isSingleLine = false) {
             methodArray.forEach((d, i) => {
-                const row = Math.floor(i / maxLegendsPerRow);
+                const row = isSingleLine ? 0 : Math.floor(i / maxLegendsPerRow);
                 const col = i % maxLegendsPerRow;
                 const xPos = col * legendXSpacing;
                 const yPos = startY + row * (legendRectSize + legendSpacing);
@@ -131,10 +118,10 @@ async function stackedAreaPerMethodAndYear() {
 
                 g.append("rect")
                     .attr("class", "legend-rect")
-                    .datum(d) // Enllacem la dada per al selector d'updateChart
+                    .datum(d)
                     .attr("width", legendRectSize)
                     .attr("height", legendRectSize)
-                    .style("fill", "#000") // Opció negra per defecte
+                    .style("fill", color(d))
                     .style("stroke", "#000")
                     .style("stroke-width", 1);
 
@@ -150,11 +137,12 @@ async function stackedAreaPerMethodAndYear() {
             });
         }
 
-        // Dibuixar les dues seccions de la llegenda
+        // Curts en quadrícula
         drawLegend(shortMethods, -margin.top);
-        drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing));
 
-        // Mostrar SVG i amagar spinner
+        // Llargs en línia separada
+        drawLegend(longMethods, -margin.top + legendRows * (legendRectSize + legendSpacing), true);
+
         $("#stackedAreaPerMethodAndYear").show();
         $("#stackedAreaPerMethodAndYear").closest('div').find('.fa-spinner').hide();
 
