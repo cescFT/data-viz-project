@@ -76,7 +76,7 @@ async function loadFilters() {
         const filterConvivencia = $("[name='situacioConvivenciaSelect']");
 
         rows = runQuery(db, `
-            SELECT distinct situacio_convivencia
+            SELECT distinct situacio_convivència as situacio_convivencia
             from ive_cat
         `);
 
