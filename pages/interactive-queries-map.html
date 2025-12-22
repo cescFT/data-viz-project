@@ -36,6 +36,13 @@
 
     <div class="container">
 
+        <div class="mb-4">
+            <form name="filters">
+                <button type="button" data-action="submit"> Cercar </button>
+            </form>
+        </div>
+
+
         <div id="catMap" style="width: 100%; height: 500px;" class="mb-4"></div>
 
         <a href="https://cescft.github.io/data-viz-project/" class="btn btn-link">
@@ -116,8 +123,11 @@
     });
 
     $(document).ready(function(){
-
         loadCataloniaMapInteraction(map);
+    });
+
+
+    $("body").on("click", "[data-action='submit']", function() {
         executeFilters(map);
     });
 
