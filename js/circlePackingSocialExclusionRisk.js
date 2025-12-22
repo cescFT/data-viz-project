@@ -94,7 +94,14 @@ async function circlePackingSocialExclusionRisk() {
 
             const valueText = d.value !== undefined ? `: ${d.value}` : "";
             tooltip.transition().duration(200).style("opacity", 1);
-            tooltip.html(`${levelName} - ${d.data.name}${valueText}`)
+
+            let tooltipText = `${levelName} - ${d.data.name}${valueText}`;
+            
+            if (levelName === "Arrel") {
+                tooltipText = `${d.data.name}${valueText}`;
+            }
+
+            tooltip.html(tooltipText)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
         }).on("mousemove", (event) => {
