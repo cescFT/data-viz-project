@@ -1,21 +1,33 @@
-function cataloniaMapInteraction() {
-    const admin = L.tileLayer('https://geoserveis.icgc.cat/servei/catalunya/mapa-base/wmts/administratiu/MON3857NW/{z}/{x}/{y}.png', {
-        maxZoom: 20
-    });
+function loadCataloniaMapInteraction() {
+    const admin = L.tileLayer(
+        'https://geoserveis.icgc.cat/servei/catalunya/mapa-base/wmts/administratiu/MON3857NW/{z}/{x}/{y}.png',
+        { maxZoom: 20 }
+    );
 
-    // Creem el mapa amb la capa Administratiu activada per defecte
     const map = L.map('catMap', {
-        attributionControl: false,
-        minZoom: 6,
         center: [41.8, 1.7],
         zoom: 8,
         layers: [admin]
     });
 
-    // Si vols mantenir el control de capes però només amb Administratiu
-    const baseLayers = {
-        'Administratiu': admin
-    };
+    // Estil general de les comarques
+    function styleComarques(feature) {
+        return {
+            fillColor: '#cccccc',
+            weight: 1,
+            color: '#555',
+            fillOpacity: 0.5
+        };
+    }
 
-    L.control.layers(baseLayers, null, { collapsed: false }).addTo(map);       
+
+    // Carregar el GeoJSON de comarques
+    fetch('static-data/comarques_catalunya.geojson')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: styleComarques
+            }).addTo(map);
+        })
+        .catch(err => console.error('Error carregant GeoJSON comarques:', err));
 }
