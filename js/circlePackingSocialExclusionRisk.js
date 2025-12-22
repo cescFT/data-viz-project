@@ -18,11 +18,9 @@ async function circlePackingSocialExclusionRisk() {
 
                 ingressosMap.forEach((ingData, ingKey) => {
                     const ingNode = { name: ingKey, children: [] };
-
                     ingData.forEach(d => {
                         ingNode.children.push({ name: d.financament_public, value: d.count });
                     });
-
                     situNode.children.push(ingNode);
                 });
 
@@ -81,7 +79,7 @@ async function circlePackingSocialExclusionRisk() {
             .style("font-size", d => Math.min(2 * d.r / 5, 12))
             .style("font-weight", "bold")
             .text(d => d.data.name)
-            .style("opacity", d => d.depth === 1 ? 1 : 0);
+            .style("opacity", d => d.depth === 1 ? 1 : 0); // només nivell 1 inicial
 
         const tooltip = d3.select("body").append("div")
             .style("position", "absolute")
@@ -108,9 +106,11 @@ async function circlePackingSocialExclusionRisk() {
         });
 
         let focus = root;
+        let view = [root.x, root.y, root.r * 2];
 
         const zoomTo = (v) => {
             const k = width / v[2];
+            view = v;
             labels.attr("transform", d => `translate(${(d.x - v[0]) * k + width/2},${(d.y - v[1]) * k + height/2})`);
             nodes.attr("transform", d => `translate(${(d.x - v[0]) * k + width/2},${(d.y - v[1]) * k + height/2})`);
             nodes.attr("r", d => d.r * k);
@@ -118,8 +118,15 @@ async function circlePackingSocialExclusionRisk() {
 
         const zoom = (d) => {
             focus = d;
-            zoomTo([d.x, d.y, d.r * 2]);
-            labels.style("opacity", l => (l.parent === d ? 1 : 0));
+            const transition = svg.transition()
+                .duration(750)
+                .tween("zoom", () => {
+                    const i = d3.interpolateZoom(view, [d.x, d.y, d.r * 2]);
+                    return t => zoomTo(i(t));
+                });
+
+            labels.transition(transition)
+                .style("opacity", l => (l.depth === 3 ? 1 : (l.parent === d ? 1 : 0))); // manté text fulles
         };
 
         nodes.on("click", (event, d) => {
@@ -144,8 +151,8 @@ async function circlePackingSocialExclusionRisk() {
             .attr("width", 18)
             .attr("height", 18)
             .attr("fill", d=>d.color)
-            .attr("stroke", "#000")       // border negre
-            .attr("stroke-width", 1);    // amplada del border
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1);
 
         legend.selectAll("text")
             .data(legendData)
