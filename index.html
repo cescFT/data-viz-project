@@ -94,6 +94,15 @@
             </div>
         </div>
 
+
+        <div class="mt-4">
+            <div class="text-center position-relative">
+                <h3>Centres hospitalaris / tipus per any</h3>
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="groupedBarChartHospitalPerYearsAndIVEType" width="900" height="900" style="display: none;"></svg>
+            </div>
+        </div>
+
     </div>
 
 <script src="js/databasesInteraction.js"></script>
@@ -114,13 +123,13 @@
             "No especificat": "#F6BD16"
         };
 
-
         totalsIVECatBarchartPerYearIVEPerYear();
         treemapMethodTypeIVE(colorMap);
         sunburstDiagramNationalityStudy();
         groupedBarChartPerGroupYearAndMethod(colorMap);
         circlePackingSocialExclusionRisk();
         stackedAreaPerMethodAndYear();
+        groupedBarChartPerYearAndHospitalCenterType();
     });
 
 </script>
