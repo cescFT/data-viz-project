@@ -15,7 +15,7 @@ function treemapMethodTypeIVE(colorMap) {
             const treemapHeight = 500;
             const height = legendHeight + treemapHeight;
 
-            // Estat del filtre
+            // Estat del filtre (SELECCIÓ MÚLTIPLE)
             const activeTypes = new Set(Object.keys(colorMap));
 
             const svg = d3.select("#treemapMethodTypeIVE")
@@ -25,11 +25,10 @@ function treemapMethodTypeIVE(colorMap) {
             svg.selectAll("*").remove();
 
             const tooltip = d3.select("#treemapTooltipIVEMethodType");
-            const container = svg.node().parentNode;
-            const containerRect = container.getBoundingClientRect();
+            const containerRect = svg.node().parentNode.getBoundingClientRect();
 
             /* ============================
-               2. LLEGENDa interactiva
+               2. LLEGENDA INTERACTIVA
             ============================ */
             const legend = svg.append("g")
                 .attr("class", "legend")
@@ -46,6 +45,7 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("transform", (d, i) => `translate(${i * 260},0)`)
                 .style("cursor", "pointer")
                 .on("click", function (event, d) {
+
                     if (activeTypes.has(d.label)) {
                         activeTypes.delete(d.label);
                         d3.select(this).attr("opacity", 0.4);
@@ -53,6 +53,7 @@ function treemapMethodTypeIVE(colorMap) {
                         activeTypes.add(d.label);
                         d3.select(this).attr("opacity", 1);
                     }
+
                     updateTreemap();
                 });
 
@@ -90,7 +91,10 @@ function treemapMethodTypeIVE(colorMap) {
                         .filter(([type]) => activeTypes.has(type))
                         .map(([type, arr]) => ({
                             name: type,
-                            children: arr.map(d => ({ name: d.name, value: d.count }))
+                            children: arr.map(d => ({
+                                name: d.name,
+                                value: d.count
+                            }))
                         }))
                 };
 
@@ -152,17 +156,3 @@ function treemapMethodTypeIVE(colorMap) {
                     .attr("y", 16)
                     .text(d => d.data.name)
                     .attr("font-size", "11px")
-                    .attr("fill", "#fff")
-                    .attr("pointer-events", "none");
-            }
-
-            /* ============================
-               5. Render inicial
-            ============================ */
-            updateTreemap();
-
-            $("#treemapMethodTypeIVE").closest("div").find(".fa-spinner").remove();
-            $("#treemapMethodTypeIVE").show();
-        })
-        .catch(error => console.error(error));
-}

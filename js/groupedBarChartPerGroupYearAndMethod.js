@@ -15,7 +15,7 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         const data = rows;
 
         /* =========================
-           NORMALITZACIÓ DEL MÈTODE
+           NORMALITZACIÓ
         ========================= */
         data.forEach(d => {
             d.metode = (d.metode || "No especificat").trim();
@@ -35,9 +35,9 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
         const metodes   = [...new Set(data.map(d => d.metode))];
 
         /* =========================
-           ESTAT DE SELECCIÓ
+           ESTAT SELECCIÓ MÚLTIPLE
         ========================= */
-        let metodeSeleccionat = null;
+        const metodesSeleccionats = new Set();
 
         /* =========================
            ESCALES
@@ -127,28 +127,30 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
             .text(d => d.total);
 
         /* =========================
-           FUNCIÓ D’ACTUALITZACIÓ
+           FUNCIÓ ACTUALITZACIÓ
         ========================= */
         function updateHighlight() {
+            const hiHaSeleccio = metodesSeleccionats.size > 0;
+
             bars
                 .attr("opacity", d =>
-                    !metodeSeleccionat || d.metode === metodeSeleccionat ? 1 : 0.2
+                    !hiHaSeleccio || metodesSeleccionats.has(d.metode) ? 1 : 0.2
                 )
                 .attr("stroke", d =>
-                    d.metode === metodeSeleccionat ? "#000" : "none"
+                    metodesSeleccionats.has(d.metode) ? "#000" : "none"
                 )
                 .attr("stroke-width", d =>
-                    d.metode === metodeSeleccionat ? 1.5 : 0
+                    metodesSeleccionats.has(d.metode) ? 1.5 : 0
                 );
 
             labels
                 .attr("opacity", d =>
-                    !metodeSeleccionat || d.metode === metodeSeleccionat ? 1 : 0.2
+                    !hiHaSeleccio || metodesSeleccionats.has(d.metode) ? 1 : 0.2
                 );
         }
 
         /* =========================
-           LLEGENDA CLICABLE
+           LLEGENDA CLICABLE (MULTI)
         ========================= */
         const legend = svg.append("g")
                           .attr("transform", `translate(${margin.left},20)`);
@@ -158,26 +160,40 @@ async function groupedBarChartPerGroupYearAndMethod(colorMap) {
                 .attr("transform", `translate(${i * 180},0)`)
                 .style("cursor", "pointer")
                 .on("click", () => {
-                    metodeSeleccionat = (metodeSeleccionat === m) ? null : m;
+                    if (metodesSeleccionats.has(m)) {
+                        metodesSeleccionats.delete(m);
+                    } else {
+                        metodesSeleccionats.add(m);
+                    }
                     updateHighlight();
-
-                    legend.selectAll("rect")
-                        .attr("stroke", d => d === metodeSeleccionat ? "#000" : "none")
-                        .attr("stroke-width", d => d === metodeSeleccionat ? 2 : 0);
+                    updateLegend();
                 });
 
             gLegend.append("rect")
-                .datum(m)
                 .attr("width", 20)
                 .attr("height", 20)
-                .attr("fill", colorMap[m] || "#999999");
+                .attr("fill", colorMap[m] || "#999999")
+                .attr("class", "legend-rect");
 
             gLegend.append("text")
                 .attr("x", 28)
                 .attr("y", 15)
                 .style("font-size", "12px")
                 .text(m);
+
+            gLegend.datum(m);
         });
+
+        function updateLegend() {
+            legend.selectAll("g")
+                .select("rect")
+                .attr("stroke", d =>
+                    metodesSeleccionats.has(d) ? "#000" : "none"
+                )
+                .attr("stroke-width", d =>
+                    metodesSeleccionats.has(d) ? 2 : 0
+                );
+        }
 
         /* =========================
            SPINNER OFF
