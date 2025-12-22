@@ -106,8 +106,8 @@ async function stackedAreaPerMethodAndYear() {
             methodArray.forEach((d, i) => {
                 const row = isSingleLine ? 0 : Math.floor(i / maxLegendsPerRow);
                 const col = isSingleLine ? i : i % maxLegendsPerRow;
-                const xPos = isSingleLine 
-                    ? (width / (methodArray.length + 1)) * (i + 0.5) - legendRectSize / 2 
+                const xPos = isSingleLine
+                    ? (width / (methodArray.length + 1)) * (i + 0.5) - legendRectSize / 2
                     : col * legendXSpacing;
                 const yPos = startY + row * (legendRectSize + legendSpacing);
 
