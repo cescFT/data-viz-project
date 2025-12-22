@@ -2,9 +2,6 @@ async function sunburstDiagramNationalityStudy() {
     try {
         const db = await loadSQLiteDatabase("ive_cat.sqlite");
 
-        /* ---------------------------
-           Consultes
-        --------------------------- */
         const totals = runQuery(db, `
             SELECT count(*) as total, primera_nacionalitat
             FROM ive_cat
@@ -17,23 +14,15 @@ async function sunburstDiagramNationalityStudy() {
             GROUP BY primera_nacionalitat, situacio_laboral;
         `);
 
-        /* ---------------------------
-           Mapes per jerarquia
-        --------------------------- */
         const detailedMap = {};
         detailed.forEach(d => {
-            if (!detailedMap[d.primera_nacionalitat]) {
-                detailedMap[d.primera_nacionalitat] = [];
-            }
+            if (!detailedMap[d.primera_nacionalitat]) detailedMap[d.primera_nacionalitat] = [];
             detailedMap[d.primera_nacionalitat].push({
                 name: d.situacio_laboral,
                 value: d.total
             });
         });
 
-        /* ---------------------------
-           Jerarquia
-        --------------------------- */
         const hierarchyData = {
             name: "IVE Catalunya",
             children: totals.map(d => ({
@@ -43,9 +32,6 @@ async function sunburstDiagramNationalityStudy() {
             }))
         };
 
-        /* ---------------------------
-           Dimensions i colors
-        --------------------------- */
         const width = 650;
         const radius = width / 2;
 
@@ -54,7 +40,6 @@ async function sunburstDiagramNationalityStudy() {
             "No Espanyola": { base: "#F6BD16", light: "#FFD666" }
         };
 
-        // ESTAT DE SELECCIÓ MÚLTIPLE (LLEGENDA)
         let activeNationalities = new Set(); // buit → mostrar tot
 
         const svg = d3.select("#sunburstNationalityStudy");
@@ -66,9 +51,6 @@ async function sunburstDiagramNationalityStudy() {
             .append("g")
             .attr("transform", `translate(${radius},${radius + 40})`);
 
-        /* ---------------------------
-           Layout
-        --------------------------- */
         const root = d3.hierarchy(hierarchyData)
             .sum(d => d.value)
             .sort((a, b) => b.value - a.value);
@@ -83,9 +65,6 @@ async function sunburstDiagramNationalityStudy() {
             .innerRadius(d => d.y0)
             .outerRadius(d => d.y1);
 
-        /* ---------------------------
-           Arcs
-        --------------------------- */
         const paths = g.selectAll("path")
             .data(root.descendants().filter(d => d.depth > 0))
             .enter()
@@ -101,15 +80,11 @@ async function sunburstDiagramNationalityStudy() {
             })
             .attr("stroke", "#fff");
 
-        /* ---------------------------
-           Funció d'actualització visual segons selecció
-        --------------------------- */
         function updateVisibility() {
             const filterSet = activeNationalities.size === 0
                 ? new Set(Object.keys(colorScale))
                 : activeNationalities;
 
-            // Arcs
             paths.transition()
                 .duration(200)
                 .attr("opacity", d => {
@@ -119,19 +94,21 @@ async function sunburstDiagramNationalityStudy() {
                     return filterSet.has(natNode.data.name) ? 1 : 0.2;
                 });
 
-            // Llegenda: gris els no seleccionats
+            // Llegenda: opacitat i border
             legendItems.each(function(ld) {
+                const rect = d3.select(this).select("rect");
                 if (activeNationalities.size === 0) {
-                    d3.select(this).attr("opacity", 1); // tot normal
+                    d3.select(this).attr("opacity", 1);
+                    rect.attr("stroke-width", 0);
                 } else {
                     d3.select(this).attr("opacity", activeNationalities.has(ld.label) ? 1 : 0.3);
+                    rect.attr("stroke-width", activeNationalities.has(ld.label) ? 2 : 0);
+                    rect.attr("stroke", "#000");
                 }
             });
         }
 
-        /* ---------------------------
-           Text interior (nacionalitat + percentatge)
-        --------------------------- */
+        // Text interior
         g.selectAll("text.inner")
             .data(root.descendants().filter(d => d.depth === 1))
             .enter()
@@ -146,14 +123,9 @@ async function sunburstDiagramNationalityStudy() {
             .attr("dy", "0.35em")
             .attr("font-size", "12px")
             .attr("fill", "#000")
-            .text(d => {
-                const percent = ((d.value / root.value) * 100).toFixed(1);
-                return `${d.data.name} (${percent}%)`;
-            });
+            .text(d => `${d.data.name} (${((d.value / root.value) * 100).toFixed(1)}%)`);
 
-        /* ---------------------------
-           Text exterior (situació laboral + percentatge)
-        --------------------------- */
+        // Text exterior
         g.selectAll("text.outer")
             .data(root.descendants().filter(d => d.depth === 2))
             .enter()
@@ -172,15 +144,11 @@ async function sunburstDiagramNationalityStudy() {
                 const parentValue = d.parent.value;
                 const percent = ((d.value / parentValue) * 100).toFixed(1);
                 let name = d.data.name;
-                if (name === "Aturada o a la recerca de la primera feina remunerada") {
-                    name = "Aturada";
-                }
+                if (name === "Aturada o a la recerca de la primera feina remunerada") name = "Aturada";
                 return `${name} (${percent}%)`;
             });
 
-        /* ---------------------------
-           Llegenda (clicable + multiselecció + gris no seleccionats)
-        --------------------------- */
+        // Llegenda
         const legendData = [
             { label: "Espanyola", color: colorScale["Espanyola"].base },
             { label: "No Espanyola", color: colorScale["No Espanyola"].base }
@@ -197,12 +165,8 @@ async function sunburstDiagramNationalityStudy() {
             .style("cursor", "pointer")
             .attr("opacity", 1)
             .on("click", function (event, d) {
-                // Toggle selecció
-                if (activeNationalities.has(d.label)) {
-                    activeNationalities.delete(d.label);
-                } else {
-                    activeNationalities.add(d.label);
-                }
+                if (activeNationalities.has(d.label)) activeNationalities.delete(d.label);
+                else activeNationalities.add(d.label);
 
                 updateVisibility();
             });
@@ -210,7 +174,9 @@ async function sunburstDiagramNationalityStudy() {
         legendItems.append("rect")
             .attr("width", 14)
             .attr("height", 14)
-            .attr("fill", d => d.color);
+            .attr("fill", d => d.color)
+            .attr("stroke", "#000")
+            .attr("stroke-width", 0);
 
         legendItems.append("text")
             .attr("x", 20)
@@ -218,9 +184,8 @@ async function sunburstDiagramNationalityStudy() {
             .text(d => d.label)
             .attr("font-size", "12px");
 
-        /* ---------------------------
-           Mostrar
-        --------------------------- */
+        updateVisibility();
+
         $("#sunburstNationalityStudy").show();
         $("#sunburstNationalityStudy").closest("div").find(".fa-spinner").hide();
 
