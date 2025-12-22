@@ -22,7 +22,7 @@ function loadCataloniaMapInteraction() {
 
 
     // Carregar el GeoJSON de comarques
-    fetch('static-data/comarques_catalunya.geojson')
+    fetch('../static-data/comarques_catalunya.geojson')
         .then(response => response.json())
         .then(data => {
             L.geoJSON(data, {
