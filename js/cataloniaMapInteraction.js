@@ -46,7 +46,7 @@ async function executeFilters(map, filtersSelected) {
         const rows = runQuery(db, query);
 
         if (!rows || rows.length === 0) {
-            alert("No s'han trobat dades");
+            showNotify("No s'han trobat resultats per als filtres seleccionats.", "warning");
             $("#loadingResults").hide();
             $("#catMap").show();
             return;

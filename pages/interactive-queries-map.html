@@ -140,15 +140,29 @@
 
         </div>
 
-
         <div id="catMap" style="width: 100%; height: 500px;" class="mb-4"></div>
 
-        <i class="fa fa-spinner fa-spin fa-4x text-center" id="loadingResults" style="display: none;"></i>
+        <div class="text-center">
+            <i class="fa fa-spinner fa-spin fa-4x" id="loadingResults" style="display: none;"></i>
+        </div>
 
         <a href="https://cescft.github.io/data-viz-project/" class="btn btn-link">
             <i class="fa fa-arrow-left" aria-hidden="true"></i> Torna a la pàgina principal
         </a>
     </div>
+
+
+    <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 1100">
+    <div id="appToast" class="toast align-items-center text-bg-dark border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="appToastBody">
+                Missatge
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
 
     <footer class="bg-body-tertiary text-center">
     <div class="container p-4 pb-0">
@@ -210,6 +224,7 @@
 <script src="../js/databasesInteraction.js"></script>
 <script src="../js/cataloniaMapInteraction.js"></script>
 <script src="../js/loadFilters.js"></script>
+<script src="../js/toastManager.js"></script>
 
 <script>
 
