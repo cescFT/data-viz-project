@@ -50,8 +50,18 @@ async function executeFilters(map, filtersSelected) {
         let conditions = [];
         for (const [filterName, selectedValues] of Object.entries(filtersSelected)) {
             let objectData = Object.values(selectedValues);
-            console.log(objectData)
+            if (objectData[0].length > 0) {
+                let field = objectData[1];
+                conditions.push(`${field} IN (${objectData[0].map(v => `'${v}'`).join(', ')})`);
+            }
         }
+
+
+        if (conditions.length > 0) {
+            query += conditions.join(' AND ') + ' ' + endQuery;
+        }
+
+        console.log(query);
 
         fetch('../static-data/comarques_catalunya.geojson')
         .then(response => response.json())
