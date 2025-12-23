@@ -47,7 +47,32 @@ async function executeFilters(map, filtersSelected) {
 
         if (!rows || rows.length === 0) {
             showNotify("No s'han trobat resultats per als filtres seleccionats.", "warning");
-            loadCataloniaMapInteraction(map);
+
+            // Netejar capes anteriors
+            map.eachLayer(layer => {
+                if (layer instanceof L.GeoJSON) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Treure llegenda existent
+            if (legendControl) {
+                map.removeControl(legendControl);
+                legendControl = null;
+            }
+
+            // Tornar a carregar mapa en gris
+            const geojson = await fetch("../static-data/comarques_catalunya.geojson").then(r => r.json());
+
+            L.geoJSON(geojson, {
+                style: feature => ({
+                    fillColor: "#cccccc",
+                    weight: 1,
+                    color: "#555",
+                    fillOpacity: 0.5
+                })
+            }).addTo(map);
+
             $("#loadingResults").hide();
             $("#catMap").show();
 
