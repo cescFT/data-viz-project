@@ -20,6 +20,12 @@
         html {
             scroll-behavior: smooth;
         }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
     </style>
 <body>
     <header class="container-fluid bg-light border-bottom mb-4">
@@ -51,40 +57,48 @@
             <h5 class="mb-3 fw-bold">Índex</h5>
             <ul class="list-unstyled">
                 <li class="mb-1">
-                    <a href="#introduccio" class="text-decoration-none text-primary">Breu introducció i explicació d'estudi d'aquest fenòmen</a>
+                    <a href="#introduccio" class="text-decoration-none text-primary">1. Breu introducció i explicació d'estudi d'aquest fenòmen</a>
                     <ul class="list-unstyled ms-3 mt-1">
                         <li class="mb-1">
-                            <a href="#conjuntdades" class="text-decoration-none text-secondary">Conjunt de dades</a>
+                            <a href="#conjuntdades" class="text-decoration-none text-secondary">1.1. Conjunt de dades</a>
                         </li>
                         <li class="mb-1">
-                            <a href="#motiuestudi" class="text-decoration-none text-secondary">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</a>
+                            <a href="#motiuestudi" class="text-decoration-none text-secondary">1.2. Perquè l'estudi de les interrupcions voluntàries d'embaràs?</a>
                         </li>
                         <li class="mb-1">
-                            <a href="#formatestudi" class="text-decoration-none text-secondary">Amb quina forma s'estudiarà aquest fenòmen?</a>
+                            <a href="#formatestudi" class="text-decoration-none text-secondary">1.3. Amb quina forma s'estudiarà aquest fenòmen?</a>
                         </li>
                     </ul>
                 </li>
                 <li class="mb-1">
-                    <a href="#visualitzacions" class="text-decoration-none text-primary">Visualitzacions</a>
+                    <a href="#visualitzacions" class="text-decoration-none text-primary">2. Visualitzacions</a>
                     <ul class="list-unstyled ms-3 mt-1">
                         <li class="mb-1">
-                            <a href="#tipusmetodesive" class="text-decoration-none text-secondary">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</a>
-                            <a href="#ivePerAny" class="text-decoration-none text-secondary">Interrupcions voluntàries d'embarassos per any</a>
+                            <a href="#tipusmetodesive" class="text-decoration-none text-secondary">2.1. Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</a>
+                            <a href="#ivePerAny" class="text-decoration-none text-secondary">2.2. Interrupcions voluntàries d'embarassos per any</a>
+                            <a href="#metodologiaperany" class="text-decoration-none text-secondary">2.3. Metodologia emprada per any</a>
+                            <a href="#tipushospitals" class="text-decoration-none text-secondary">2.4. Tipus de centres hospitalaris que s'han utilitzat al llarg dels anys</a>
+                            <a href="#grupedatmetodologia" class="text-decoration-none text-secondary">2.5. Grup d'edat i metodologia emprada</a>
+                            <a href="#situaciolaboralinacionalitat" class="text-decoration-none text-secondary">2.6. Situació laboral i nacionalitat</a>
+                            <a href="#situaciopersonal" class="text-decoration-none text-secondary">2.7. Situació personal de la dona respecte la seva convivència, ingressos i ús de finançament públic</a>
                         </li>
                     </ul>
+                </li>
+                <li class="mb-1">
+                    <a href="#map" class="text-decoration-none text-primary">3. Vols observar com es distribueixen les interrupcions voluntàries d'embarassos a Catalunya?</a>
                 </li>
             </ul>
         </div>
 
-        <h2 id="introduccio">Breu introducció i explicació d'estudi d'aquest fenòmen</h2>
-        <h3 id="conjuntdades">Conjunt de dades</h3>
+        <h2 id="introduccio">1. Breu introducció i explicació d'estudi d'aquest fenòmen</h2>
+        <h3 id="conjuntdades">1.1. Conjunt de dades</h3>
         <p>
             Les visualitzacions que es mostren a continuació estan basades en les dades obertes proporcionades per la Generalitat de Catalunya
             sobre les interrupcions voluntàries d'embaràs (IVE) a Catalunya, disponibles fent clic
             <a target="_blank" href="https://analisi.transparenciacatalunya.cat/Salut/Interrupcions-volunt-ries-d-embar-s-IVE-a-Cataluny/5qx5-hkkr/about_data">aquí</a>.
         </p>
 
-        <h3 id="motiuestudi">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</h3>
+        <h3 id="motiuestudi">1.2. Perquè l'estudi de les interrupcions voluntàries d'embaràs?</h3>
         <p>
             A la nostra societat aquest tema és molt tabú i sovint és amagat, assetjat o fins i tot criminalitzat. És important
             estudiar-lo per comprendre millor les circumstàncies i factors que envolten aquesta decisió, que és sovint complexa i personal.
@@ -93,7 +107,7 @@
             Per a més informació feu clic <a href="https://canalsalut.gencat.cat/ca/salut-a-z/i/interrupcio-voluntaria-embaras/" target="_blank">aquí</a>.
         </p>
 
-        <h3 id="formatestudi">Amb quina forma s'estudiarà aquest fenòmen?</h3>
+        <h3 id="formatestudi">1.3.Amb quina forma s'estudiarà aquest fenòmen?</h3>
         <p>
             La forma d'estudiar-ho, i per tal d'explotar la capacitat que els humans tenim a l'hora d'entendre les dades de forma visual,
             es farà a través de visualitzacions de dades, totes elles escollides d'acord amb la informació que es vol transmetre i 
@@ -101,14 +115,14 @@
         </p>
 
 
-        <h2 id="visualitzacions">Prova d'analitzar el fenòmen a través de les visualitzacions!</h2>
+        <h2 id="visualitzacions">2. Prova d'analitzar el fenòmen a través de les visualitzacions!</h2>
         <p>
             A continuació es mostraran diverses visualitzacions de dades, algunes presenten certa interactivitat, la qual permetrà
             filtrar de forma visual l'objecte d'estudi de cadascuna de les visualitzacions.
         </p>
 
         <div class="mt-4">
-            <h3 id="tipusmetodesive">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
+            <h3 id="tipusmetodesive">2.1. Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
             <p> <i class="fa fa-eye"></i>
                 <i>Tip</i>: Passa el cursor per sobre dels rectangles per obtenir més informació o prem damunt de la llegenda per a filtrar!
             </p>
@@ -139,64 +153,136 @@
 
 
         <div class="mt-4">
-            <h3 id="ivePerAny">Interrupcions voluntàries d'embarassos per any</h3>
+            <h3 id="ivePerAny">2.2. Interrupcions voluntàries d'embarassos per any</h3>
             <div class="text-center">
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
             </div>
             <p>
                 <b>Què ens explica aquesta visualització?</b><br>
-                Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Així doncs, de forma visual podem observar que el conjunt de dades 
+                Aquest gràfic, de tipus <i>bar chart</i> mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Així doncs, de forma visual podem observar que el conjunt de dades 
                 presenta informació que s'inicia a l'any <b>2007</b> i que acaba a l'any <b>2022</b>. A més, es pot veure com hi ha un clar ascens en el nombre de casos.
                 Això vol dir que se n'està fent ús del dret a la interrupció voluntària de l'embaràs.
                 El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022.
             </p>
         </div>
-        
-        <div class="mt-4">
-            <div class="text-center position-relative">
-                <h3>Situació laboral i nacionalitat</h3>
-                <i class="fa fa-spinner fa-spin"></i>
-                <svg id="sunburstNationalityStudy" width="600" height="600" style="display: none;"></svg>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            <div class="text-center position-relative">
-                <h3>Grup d'edat i metodologia emprada</h3>
-                <i class="fa fa-spinner fa-spin"></i>
-                <svg id="groupedBarChartPerYearsAndIVEType" width="600" height="600" style="display: none;"></svg>
-            </div>
-        </div>
 
         <div class="mt-4">
+            <h3 id="metodologiaperany">2.3. Metodologia emprada per any</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Prem damunt de la llegenda per a filtrar!
+            </p>
             <div class="text-center position-relative">
-                <h3>Situació personal de la dona respecte la seva convivència, ingressos i finançament públic</h3>
-                <i class="fa fa-spinner fa-spin"></i>
-                <svg id="circlePackingSocialExclusionRisk" width="900" height="900" style="display: none;"></svg>
-            </div>
-        </div>
-
-
-        <div class="mt-4">
-            <div class="text-center position-relative">
-                <h3>Metodologia emprada per any</h3>
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="stackedAreaPerMethodAndYear" width="900" height="500" style="display: none;"></svg>
             </div>
+            <p>
+                <b>Quina metodologia s'ha emprat més al llarg dels anys?</b><br>
+                Un cop hem vist que l'ús del dret de la interrució dels embarassos ha anat en augment, ens podem preguntar 
+                quina metodologia s'ha emprat més al llarg dels anys.Aquest gràfic de tipus <i>area stacked chart</i> vol donar resposta a aquesta pregunta.
+                S'hi mostra l'evolució dels diferents mètodes d'interrupció voluntària d'embaràs (IVE) utilitzats a Catalunya al llarg dels anys,
+                a més de reflectir canvis en les pràctiques mèdiques i les preferències de les pacients al llarg dels anys.
+            </p>
         </div>
 
 
         <div class="mt-4 mb-1">
+            <h3 id="tipushospitals">2.4. Tipus de centres hospitalaris que s'han utilitzat al llarg dels anys</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Prem damunt de la llegenda per a filtrar!
+            </p>
             <div class="text-center position-relative">
-                <h3>Centres hospitalaris / tipus per any</h3>
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="groupedBarChartHospitalPerYearsAndIVEType" width="900" height="900" style="display: none;"></svg>
             </div>
+            <p>
+                <b>On s'han realitzat les interrupcions voluntàries d'embaràs al llarg dels anys?</b><br>
+                Arribats en aquest punt, pot ser interessant conèixer on s'han realitzat les interrupcions voluntàries d'embaràs (IVE) al llarg dels anys.
+                Aquesta visualització de tipus <i>grouped bar chart</i> mostra la distribució dels diferents tipus de centres hospitalaris presents en el conjunt de dades 
+                on s'han realitzat les interrupcions voluntàries d'embaràs (IVE) a Catalunya al llarg dels anys. 
+                Així doncs, podem observar quins tipus de centres hospitalaris són més utilitzats per a dur a terme aquesta tipologia  d'intervencions mèdiques.
+            </p>
         </div>
 
-        <div class="text-center">
-            <a href="pages/interactive-queries-map.html" class="btn btn-link"><i class="fa fa-search"></i> Mapa interactiu</a>
+        <p>
+            Fins aquí ens hem centrat en el fenòmen de les interrupcions voluntàries d'embaràs de forma anual. Però en el conjunt de dades
+            hi ha <b>altres aspectes socioeconòmics</b> que podem analitzar i que poden aportar informació rellevant sobre el perfil de les persones que opten per aquesta decisió.
+            A continuació es mostren diverses visualitzacions que exploren aquests aspectes.
+        </p>
+
+
+        <div class="mt-4">
+            <h3 id="grupedatmetodologia">2.5. Grup d'edat i metodologia emprada</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Prem damunt de la llegenda per a filtrar!
+            </p>
+            <div class="text-center position-relative">
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="groupedBarChartPerYearsAndIVEType" width="600" height="600" style="display: none;"></svg>
+            </div>
+
+            <p>
+                <b>Quina metodologia s'ha emprat segons el grup d'edat?</b><br>
+                Aquesta visualització de tipus <i>grouped bar chart</i> mostra la distribució dels diferents mètodes d'interrupció voluntària d'embaràs (IVE) 
+                utilitzats a Catalunya segons el grup d'edat de les pacients. Així doncs, podem observar quins mètodes són més utilitzats per cada grup d'edat,
+                i com les preferències o recomanacions mèdiques poden variar segons l'edat de la pacient. Per tal que aquesta anàlisi es pugui dur a terme més fàcilment,
+                s'ha optat per agrupar les diverses metodologies en les dues categories principals: mètodes quirúrgics i mètodes farmacològics tenint en compte també
+                el grup de metodologies no especificades.
+            </p>
+        </div>
+
+        
+        <div class="mt-4">
+            <h3 id="situaciolaboralinacionalitat">2.6. Situació laboral i nacionalitat</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Prem damunt de la llegenda per a filtrar!
+            </p>
+            <div class="text-center position-relative">
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="sunburstNationalityStudy" width="600" height="600" style="display: none;"></svg>
+            </div>
+            <p>
+                <b>
+                    Com es relacionen la situació laboral i la nacionalitat de la dona amb les interrupcions voluntàries d'embaràs?
+                    És cert que venen molts estrangers a Catalunya per a realitzar-se una IVE? Quina situació laboral tenen aquestes dones?
+                </b><br>
+                Aquesta visualització de tipus <i>sunburst diagram</i> vol respondre aquestes preguntes. Hi apareixen dues capes concèntriques. En la capa interior
+                vol donar resposta al percentatge de dones espanyoles / no espanyoles usen el servei d'interrupcions voluntàries d'embaràs (IVE) a Catalunya,
+                i la capa exterior representa la seva situació laboral. Així doncs, amb una única representació podem veure com el percentatge més elevat de dones
+                que realitzen una IVE a Catalunya són espanyoles i tenen una situació laboral activa. Hem desmuntat un mite?
+            </p>
+        </div>
+        
+
+        <div class="mt-4">
+            <h3 id="situaciopersonal">2.7. Situació personal de la dona respecte la seva convivència, ingressos i ús de finançament públic</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Prem damunt de la llegenda per a filtrar!
+            </p>
+            <div class="text-center position-relative">
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="circlePackingSocialExclusionRisk" width="900" height="900" style="display: none;"></svg>
+            </div>
+            <p>
+                <b>Quina és la situació personal de les dones que opten per una interrupció voluntària d'embaràs a Catalunya?</b><br>
+                Aquesta visualització de tipus <i>circle packing</i> mostra la distribució de les dones que han realitzat una interrupció voluntària d'embaràs (IVE)
+                a Catalunya segons la seva situació personal en relació amb la convivència, els ingressos i l'ús de finançament públic. Així doncs, podem observar
+                quines combinacions d'aquestes variables són més comunes entre les dones que opten per aquesta decisió, i com aquests factors poden influir en la seva
+                experiència i accés als serveis d'IVE.
+            </p>
+        </div>
+
+        <h2 id="map">3. Vols observar com es distribueixen les interrupcions voluntàries d'embarassos a Catalunya?</h2>
+
+        <div class="mt-4">
+            <i class="fa fa-search"></i> 
+            <b>Filtra les dades i veuràs en un mapa cloroplètic com es distribueixen les interrupcions voluntàries d'embarassos a Catalunya segons la teva selecció!</b>
+            
+            <a href="pages/interactive-queries-map.html" class="btn btn-primary btn-lg rounded-pill shadow-sm d-inline-flex align-items-center">
+                <i class="fa fa-map me-2"></i>
+                Mapa interactiu
+            </a>
+
         </div>
     </div>
     <footer class="bg-body-tertiary text-center">
