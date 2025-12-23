@@ -47,6 +47,7 @@ async function executeFilters(map, filtersSelected) {
 
         if (!rows || rows.length === 0) {
             showNotify("No s'han trobat resultats per als filtres seleccionats.", "warning");
+            loadCataloniaMapInteraction(map);
             $("#loadingResults").hide();
             $("#catMap").show();
             return;
