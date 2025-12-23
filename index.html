@@ -46,38 +46,45 @@
         </div>
     </header>
 
-    <div id="toc" class="border rounded p-3 mb-4 bg-light shadow-sm">
-        <h5 class="mb-3 fw-bold">Índex</h5>
-        <ul class="list-unstyled">
-            <li class="mb-1">
-                <a href="#conjuntdades" class="text-decoration-none text-primary">Conjunt de dades</a>
-            </li>
-            <li class="mb-1">
-                <a href="#motiuestudi" class="text-decoration-none text-primary">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</a>
-            </li>
-            <li class="mb-1">
-                <a href="#formatestudi" class="text-decoration-none text-primary">Amb quina forma s'estudiarà aquest fenòmen?</a>
-            </li>
-            <li class="mb-1">
-                <a href="#visualitzacions" class="text-decoration-none text-primary">Visualitzacions</a>
-                <ul class="list-unstyled ms-3 mt-1">
-                    <li class="mb-1">
-                        <a href="#ivePerAny" class="text-decoration-none text-secondary">Interrupcions voluntàries d'embarassos per any</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
     <div class="container">
-        <h2 id="conjuntdades">Conjunt de dades</h2>
+        <div id="toc" class="border rounded p-3 mb-4 bg-light shadow-sm">
+            <h5 class="mb-3 fw-bold">Índex</h5>
+            <ul class="list-unstyled">
+                <li class="mb-1">
+                    <a href="#introduccio" class="text-decoration-none text-primary">Breu introducció i explicació d'estudi d'aquest fenòmen</a>
+                    <ul class="list-unstyled ms-3 mt-1">
+                        <li class="mb-1">
+                            <a href="#conjuntdades" class="text-decoration-none text-secondary">Conjunt de dades</a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="#motiuestudi" class="text-decoration-none text-secondary">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="#formatestudi" class="text-decoration-none text-secondary">Amb quina forma s'estudiarà aquest fenòmen?</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="mb-1">
+                    <a href="#visualitzacions" class="text-decoration-none text-primary">Visualitzacions</a>
+                    <ul class="list-unstyled ms-3 mt-1">
+                        <li class="mb-1">
+                            <a href="#tipusmetodesive" class="text-decoration-none text-secondary">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</a>
+                            <a href="#ivePerAny" class="text-decoration-none text-secondary">Interrupcions voluntàries d'embarassos per any</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h2 id="introduccio">Breu introducció i explicació d'estudi d'aquest fenòmen</h2>
+        <h3 id="conjuntdades">Conjunt de dades</h3>
         <p>
             Les visualitzacions que es mostren a continuació estan basades en les dades obertes proporcionades per la Generalitat de Catalunya
             sobre les interrupcions voluntàries d'embaràs (IVE) a Catalunya, disponibles fent clic
             <a target="_blank" href="https://analisi.transparenciacatalunya.cat/Salut/Interrupcions-volunt-ries-d-embar-s-IVE-a-Cataluny/5qx5-hkkr/about_data">aquí</a>.
         </p>
 
-        <h2 id="motiuestudi">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</h2>
+        <h3 id="motiuestudi">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</h3>
         <p>
             A la nostra societat aquest tema és molt tabú i sovint és amagat, assetjat o fins i tot criminalitzat. És important
             estudiar-lo per comprendre millor les circumstàncies i factors que envolten aquesta decisió, que és sovint complexa i personal.
@@ -86,7 +93,7 @@
             Per a més informació feu clic <a href="https://canalsalut.gencat.cat/ca/salut-a-z/i/interrupcio-voluntaria-embaras/" target="_blank">aquí</a>.
         </p>
 
-        <h2 id="formatestudi">Amb quina forma s'estudiarà aquest fenòmen?</h2>
+        <h3 id="formatestudi">Amb quina forma s'estudiarà aquest fenòmen?</h3>
         <p>
             La forma d'estudiar-ho, i per tal d'explotar la capacitat que els humans tenim a l'hora d'entendre les dades de forma visual,
             es farà a través de visualitzacions de dades, totes elles escollides d'acord amb la informació que es vol transmetre i 
@@ -94,28 +101,18 @@
         </p>
 
 
-        <h2 id="visualitzacions">Visualitzacions</h2>
+        <h2 id="visualitzacions">Prova d'analitzar el fenòmen a través de les visualitzacions!</h2>
         <p>
             A continuació es mostraran diverses visualitzacions de dades, algunes presenten certa interactivitat, la qual permetrà
             filtrar de forma visual l'objecte d'estudi de cadascuna de les visualitzacions.
         </p>
-        <div class="mt-4">
-            <div class="text-center">
-                <h3 class="text-center" id="ivePerAny">Interrupcions voluntàries d'embarassos per any</h3>
-                <i class="fa fa-spinner fa-spin"></i>
-                <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
-            </div>
-            <p>
-                <b>Què ens explica aquesta visualització?</b>
-                Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Així doncs, de forma visual podem observar que el conjunt de dades 
-                presenta informació que s'inicia a l'any <b>2007</b> i que acaba a l'any <b>2022</b>. A més, es pot veure com hi ha un clar ascens en el nombre de casos.
-                Això vol dir que se n'està fent ús del dret a la interrupció voluntària de l'embaràs.
-                El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022.
-            </p>
-        </div>
 
         <div class="mt-4">
-             <h3 class="text-center">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
+            <h3 id="tipusmetodesive">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
+            <p> <i class="fa fa-eye"></i>
+                <i>Tip</i>: Passa el cursor per sobre dels rectangles per obtenir més informació o prem damunt de la llegenda per a filtrar!
+            </p>
+
             <div class="text-center position-relative">
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="treemapMethodTypeIVE" width="900" height="600" style="display: none;"></svg>
@@ -131,8 +128,32 @@
                     z-index: 9999;
                 "></div>
             </div>
-
+            <p>
+                <b>Us heu preguntat mai com el personal santitari realitza una interrupció d'embaràs?</b><br>
+                Aquest diagrama, de tipus <i>treemap</i> mostra la distribució dels diferents mètodes d'interrupció voluntària d'embaràs (IVE) 
+                utilitzats a Catalunya. Els mètodes es classifiquen en dues categories principals: mètodes quirúrgics i mètodes farmacològics.
+                Cada rectangle representa un mètode específic, i la seva mida és proporcional al nombre d'IVE realitzades amb aquest mètode.
+                Així doncs, amb un primer cop d'ull, podem observar que els mètodes quirúrgics són els més utilitzats, enfront als mètodes farmacològics.
+            </p>
         </div>
+
+
+        <div class="mt-4">
+            <h3 id="ivePerAny">Interrupcions voluntàries d'embarassos per any</h3>
+            <div class="text-center">
+                <i class="fa fa-spinner fa-spin"></i>
+                <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
+            </div>
+            <p>
+                <b>Què ens explica aquesta visualització?</b><br>
+                Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Així doncs, de forma visual podem observar que el conjunt de dades 
+                presenta informació que s'inicia a l'any <b>2007</b> i que acaba a l'any <b>2022</b>. A més, es pot veure com hi ha un clar ascens en el nombre de casos.
+                Això vol dir que se n'està fent ús del dret a la interrupció voluntària de l'embaràs.
+                El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022.
+            </p>
+        </div>
+
+        
         
         <div class="mt-4">
             <div class="text-center position-relative">
