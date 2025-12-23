@@ -82,7 +82,13 @@ async function executeFilters(map, filtersSelected) {
 
         const comarcaTotals = {};
         rows.forEach(r => {
-            comarcaTotals[r.nom_comarca_residencia] = r.total;
+            let comarcaName = r.nom_comarca_residencia;
+
+            if (comarcaName === "Aran") {
+                comarcaName = "Val d'Aran";
+            }
+
+            comarcaTotals[comarcaName] = r.total;
         });
 
         const totals = rows.map(r => r.total);
