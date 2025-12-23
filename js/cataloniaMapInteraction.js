@@ -63,6 +63,18 @@ async function executeFilters(map, filtersSelected) {
 
         console.log(query);
 
+        const db = await loadSQLiteDatabase("../ive_cat.sqlite");
+
+        const rows = runQuery(db, query);
+
+        let firstElement = rows[0];
+        let lastElement = rows[rows.length - 1];
+
+        console.log('First element:', firstElement);
+        console.log('Last element:', lastElement);
+
+
+
         fetch('../static-data/comarques_catalunya.geojson')
         .then(response => response.json())
         .then(data => {
