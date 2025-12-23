@@ -168,14 +168,16 @@ async function executeFilters(map, filtersSelected) {
                 };
 
                 let html = `<strong>Casos</strong><br>`;
-                html += `<div><span style="background:#e0e0e0"></span> 0</div>`;
+                html += `<div><span style="display:inline-block;width:16px;height:16px;margin-right:6px;background:#e0e0e0"></span>0</div>`;
 
                 uniqueValues.forEach(v => {
-                    if (v <= 2) html += `<div><span style="background:${getColor(v)}"></span> ${v}</div>`;
+                    if (v < 3) {
+                        html += `<div><span style="display:inline-block;width:16px;height:16px;margin-right:6px;background:${getColor(v)}"></span>${v}</div>`;
+                    }
                 });
 
                 if (uniqueValues.some(v => v >= 3)) {
-                    html += `<div><span style="background:#2171b5"></span> ≥3</div>`;
+                    html += `<div><span style="display:inline-block;width:16px;height:16px;margin-right:6px;background:#2171b5"></span>≥3</div>`;
                 }
 
                 div.innerHTML = html;
