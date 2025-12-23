@@ -73,8 +73,26 @@
     </header>
 
     <div class="container">
-
+        <h2> <i class="fa fa-map-o"></i> Filtra les dades i observa com es distribueixen els casos arreu de Catalunya</h2>
+        <p>
+            <i class="fa fa-eye"></i> <i>Instruccions</i>:
+            <ul>
+                <li>1. És necessari almenys afegir un filtre per a visualitzar el mapa.</li>
+                <li>2. Pots seleccionar múltiples valors per a cada filtre i buscar-los en text.</li>
+                <li>3. Prem damunt del botó per a cercar!</li>
+            </ul>
+            <br>
+                4. Un cop carregat el mapa, prem damunt les àrees per a veure el nombre de casos.
+            <br><br>
+            <p>
+                <i class="fa fa-info-circle"></i> <i>Informació</i>: Aquest mapa mostra la distribució geogràfica de les interrupcions voluntàries d'embaràs a Catalunya.
+                Es transforma en un mapa cloroplètic on les àrees amb més casos es representen amb colors més intensos. És una aproximació visual
+                d'on es duen a terme a Catalunya més interrupcions segons els filtres seleccionats.
+            </p>
+        </p>
+        
         <div class="mb-4">
+            <b>Selecciona els filtres que vulguis aplicar</b>
             <form name="filters" class="p-3 border rounded bg-light">
                 <div class="row g-3">
                     <div class="col-12 col-md-3">
@@ -145,9 +163,7 @@
                         <i class="fa fa-search me-2"></i>Cercar
                     </button>
                 </div>
-
             </form>
-
         </div>
 
         <div id="catMap" style="width: 100%; height: 500px;" class="mb-4"></div>
