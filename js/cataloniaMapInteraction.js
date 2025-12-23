@@ -1,75 +1,53 @@
-function loadCataloniaMapInteraction(map) {
-
-    // Estil general de les comarques
-    function styleComarques(feature) {
-        return {
-            fillColor: '#cccccc',
-            weight: 1,
-            color: '#555',
-            fillOpacity: 0.5
-        };
-    }
-
-
-    // Carregar el GeoJSON de comarques
-    fetch('../static-data/comarques_catalunya.geojson')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJSON(data, {
-                style: styleComarques
-            }).addTo(map);
-        })
-        .catch(err => console.error('Error carregant GeoJSON comarques:', err));
-}
-
 async function executeFilters(map, filtersSelected) {
     try {
         $("#loadingResults").show();
         $("#catMap").hide();
-        let query = `SELECT COUNT(*) as total, nom_comarca_residencia
-                    FROM ive_cat
-                    WHERE `;
 
-        let endQuery = `GROUP BY nom_comarca_residencia
-            ORDER BY total`; 
-
+        let query = `
+            SELECT COUNT(*) as total, nom_comarca_residencia
+            FROM ive_cat
+            WHERE 1=1
+        `;
 
         let conditions = [];
-        for (const [filterName, selectedValues] of Object.entries(filtersSelected)) {
-            let objectData = Object.values(selectedValues);
-            if (objectData[0].length > 0) {
-                let field = objectData[1];
-                conditions.push(`${field} IN (${objectData[0].map(v => `'${v}'`).join(', ')})`);
+        for (const selectedValues of Object.values(filtersSelected)) {
+            let values = selectedValues[0];
+            let field = selectedValues[1];
+
+            if (values.length > 0) {
+                conditions.push(`${field} IN (${values.map(v => `'${v}'`).join(', ')})`);
             }
         }
 
-
         if (conditions.length > 0) {
-            query += conditions.join(' AND ') + ' ' + endQuery;
+            query += " AND " + conditions.join(" AND ");
         }
 
-        const db = await loadSQLiteDatabase("../ive_cat.sqlite");
+        query += `
+            GROUP BY nom_comarca_residencia
+            ORDER BY total
+        `;
 
+        const db = await loadSQLiteDatabase("../ive_cat.sqlite");
         const rows = runQuery(db, query);
 
         if (!rows || rows.length === 0) {
-            alert('No s\'han trobat dades per als filtres seleccionats.');
+            alert("No s'han trobat dades");
             $("#loadingResults").hide();
             $("#catMap").show();
             return;
         }
 
-        let min = rows[0].total;
-        let lastElementTotal = rows[rows.length - 1].total;
-        let max = lastElementTotal;
-
-        let comarcaTotals = [];
-        rows.forEach(row => {
-            comarcaTotals[row.nom_comarca_residencia] = row.total;
+        const comarcaTotals = {};
+        rows.forEach(r => {
+            comarcaTotals[r.nom_comarca_residencia] = r.total;
         });
 
-        let mode = "intervals";
-        if (lastElementTotal <= 10) mode =  "discrete";
+        const totals = rows.map(r => r.total);
+        const min = Math.min(...totals);
+        const max = Math.max(...totals);
+
+        const mode = max <= 10 ? "discrete" : "intervals";
 
         function getDiscreteColor(v) {
             if (!v || v === 0) return "#e0e0e0";
@@ -80,32 +58,26 @@ async function executeFilters(map, filtersSelected) {
 
         function getIntervalColor(v, min, max) {
             if (!v || v === 0) return "#e0e0e0";
-
             const t = (v - min) / (max - min);
             const r = Math.round(224 - t * 190);
             const g = Math.round(224 - t * 160);
             const b = Math.round(224 + t * 10);
-
             return `rgb(${r},${g},${b})`;
         }
 
-
-        // ---------- 6. NETEJAR MAPA ----------
+        // Netejar capes anteriors
         map.eachLayer(layer => {
             if (layer instanceof L.GeoJSON) {
                 map.removeLayer(layer);
             }
         });
 
+        const geojson = await fetch("../static-data/comarques_catalunya.geojson").then(r => r.json());
 
-
-        const geojson = await fetch('../static-data/comarques_catalunya.geojson').then(r => r.json());
-
-        const geoLayer = L.geoJSON(geojson, {
+        L.geoJSON(geojson, {
             style: feature => {
                 const comarca = feature.properties.nom_comar;
                 const value = comarcaTotals[comarca] || 0;
-
                 return {
                     fillColor: mode === "discrete"
                         ? getDiscreteColor(value)
@@ -118,7 +90,6 @@ async function executeFilters(map, filtersSelected) {
             onEachFeature: (feature, layer) => {
                 const comarca = feature.properties.nom_comar;
                 const value = comarcaTotals[comarca] || 0;
-
                 layer.bindTooltip(
                     `<strong>${comarca}</strong><br>Total: ${value}`,
                     { sticky: true }
@@ -126,37 +97,41 @@ async function executeFilters(map, filtersSelected) {
             }
         }).addTo(map);
 
+        // ---------- LLEGENDA MIN–MAX ----------
         const legend = L.control({ position: "bottomright" });
 
         legend.onAdd = function () {
             const div = L.DomUtil.create("div", "info legend");
             div.style.background = "white";
-            div.style.padding = "8px";
-            div.style.borderRadius = "4px";
+            div.style.padding = "10px";
+            div.style.borderRadius = "6px";
             div.style.fontSize = "12px";
+            div.style.minWidth = "140px";
 
             if (mode === "discrete") {
-                div.innerHTML += `
-                    <div><i style="background:#e0e0e0"></i> 0</div>
-                    <div><i style="background:#cfe8ff"></i> 1</div>
-                    <div><i style="background:#9ecae1"></i> 2</div>
-                    <div><i style="background:#2171b5"></i> ≥3</div>
+                div.innerHTML = `
+                    <strong>Total</strong><br>
+                    <div><span style="background:#e0e0e0"></span> 0</div>
+                    <div><span style="background:#cfe8ff"></span> 1</div>
+                    <div><span style="background:#9ecae1"></span> 2</div>
+                    <div><span style="background:#2171b5"></span> ≥3</div>
                 `;
             } else {
-                const steps = 5;
-                const stepSize = Math.ceil((max - min) / steps);
+                const minColor = getIntervalColor(min, min, max);
+                const maxColor = getIntervalColor(max, min, max);
 
-                for (let i = 0; i < steps; i++) {
-                    const from = min + i * stepSize;
-                    const to = Math.min(from + stepSize - 1, max);
-
-                    div.innerHTML += `
-                        <div>
-                            <i style="background:${getIntervalColor(from, min, max)}"></i>
-                            ${from}–${to}
-                        </div>
-                    `;
-                }
+                div.innerHTML = `
+                    <strong>Total</strong><br>
+                    <div style="
+                        height: 12px;
+                        margin: 6px 0;
+                        background: linear-gradient(to right, ${minColor}, ${maxColor});
+                    "></div>
+                    <div style="display:flex; justify-content:space-between">
+                        <span>${min}</span>
+                        <span>${max}</span>
+                    </div>
+                `;
             }
 
             return div;
@@ -166,8 +141,8 @@ async function executeFilters(map, filtersSelected) {
 
         $("#loadingResults").hide();
         $("#catMap").show();
-    } catch (error) {
-        console.error('Error executant els filtres:', error);
-    }
 
+    } catch (error) {
+        console.error("Error executant els filtres:", error);
+    }
 }
