@@ -16,6 +16,11 @@
         <title>Estudi IVE Catalunya</title>
         <link rel="icon" href="favicon.ico" type="image/x-icon">
     </head>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 <body>
     <header class="container-fluid bg-light border-bottom mb-4">
         <div class="row align-items-center py-3">
@@ -41,19 +46,71 @@
         </div>
     </header>
 
+
+    <div id="toc" class="border p-3 mb-4 bg-light">
+        <ul class="list-unstyled">
+            <li><a href="#conjuntdades" class="text-decoration-none">Conjunt de dades</a></li>
+            <li><a href="#motiuestudi" class="text-decoration-none">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</a></li>
+            <li><a href="#formatestudi" class="text-decoration-none">Amb quina forma s'estudiara aquest fenòmen?</a></li>
+            <li>
+                <a href="#visualitzacions" class="text-decoration-none">Visualitzacions</a>
+                <ul class="list-unstyled ms-3">
+                    <li><a href="#ivePerAny" class="text-decoration-none">Interrupcions voluntàries d'embarassos per any</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+
+    <h2 id="conjuntdades">Conjunt de dades</h2>
+    <p>
+        Les visualitzacions que es mostren a continuació estan basades en les dades obertes proporcionades per la Generalitat de Catalunya
+        sobre les interrupcions voluntàries d'embaràs (IVE) a Catalunya, disponibles fent clic
+        <a 
+            target="_blank"
+            href="https://analisi.transparenciacatalunya.cat/Salut/Interrupcions-volunt-ries-d-embar-s-IVE-a-Cataluny/5qx5-hkkr/about_data">
+            aquí</a>.
+        Aquest
+    </p>
+
+    <h2 id="motiuestudi">Perquè l'estudi de les interrupcions voluntàries d'embaràs?</h2>
+    <p>
+        A la nostra societat aquest tema és molt tabú i sovint és amagat, assetjat o fins i tot criminalitzat. És important
+        estudiar-lo per comprendre millor les circumstàncies i factors que envolten aquesta decisió, que és sovint complexa i personal.
+        A més, està regulat per llei. A Catalunya s'empara en la Llei Orgànica 1/2023, de 28 de febrer, per la qual es modifica 
+        la Llei Orgànica 2/2010, de 3 de març, de salut sexual i reproductiva i de la interrupció voluntària de l'embaràs.
+        Per a més informació feu clic <a href="https://canalsalut.gencat.cat/ca/salut-a-z/i/interrupcio-voluntaria-embaras/" target="_blank">aquí</a>.
+     </p>
+
+     <h2 id="formatestudi">Amb quina forma s'estudiara aquest fenòmen?</h2>
+     <p>
+        La forma d'estudiar-ho, i per tal d'explotar la capacitat que els humans tenim a l'hora d'entendre les dades de forma visual,
+        es farà a través de visualitzacions de dades, totes elles escollides d'acord amb la informació que es vol transmetre i 
+        la seva naturalesa.
+     </p>
+
     <div class="container">
-        <div>
+        <h2 id="visualitzacions">Visualitzacions</h2>
+        <p>
+            A continuació es mostraran diverses visualitzacions de dades, algunes presenten certa interactivitat, la qual permetrà
+            filtrar de forma visual l'objecte d'estudi de cadascuna de les visualitzacions.
+        </p>
+        <div class="mt-4">
             <div class="text-center">
-                <h3 class="text-center">Interrupcions voluntàries d'embarassos per any</h3>
+                <h3 class="text-center" id="ivePerAny">Interrupcions voluntàries d'embarassos per any</h3>
                 <i class="fa fa-spinner fa-spin"></i>
                 <svg id="totalsIVECatBarchartPerYear" width="900" height="450" style="display: none;"></svg>
             </div>
-            Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Es pot observar clarament un increment
-            de l'ús d'aquest dret. El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022, any en què
-            s'acaben les dades.
+            <p>
+                <b>Què ens explica aquesta visualització?</b>
+                Aquest gràfic mostra el nombre total d'interrupcions voluntàries d'embarassos per any. Així doncs, de forma visual podem observar que el conjunt de dades 
+                presenta informació que s'inicia a l'any <b>2007</b> i que acaba a l'any <b>2022</b>. A més, es pot veure com hi ha un clar ascens en el nombre de casos.
+                Això vol dir que se n'està fent ús del dret a la interrupció voluntària de l'embaràs.
+                El salt significatiu es va fer l'any 2019, i la tendència segueix a l'alça fins al 2022.
+            </p>
         </div>
-        
-        <div>
+
+        <div class="mt-4">
              <h3 class="text-center">Tipologia de mètodes d'interrupció d'embaràs agrupats per tipus</h3>
             <div class="text-center position-relative">
                 <i class="fa fa-spinner fa-spin"></i>
