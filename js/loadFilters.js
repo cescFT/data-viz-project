@@ -179,6 +179,43 @@ async function loadFilters() {
             dropdownParent: filtersForm
         });
 
+        const countryBornSelect = $("[name='bornCountrySelect']");
+        rows = runQuery(db, `
+            select distinct pais_naixement
+            from ive_cat
+        `);
+
+        rows.forEach(row => {
+            countryBornSelect.append(`<option value="${row.pais_naixement}">${row.pais_naixement}</option>`);
+        });
+
+        countryBornSelect.select2({
+            placeholder: "Selecciona pais de naixement",
+            allowClear: true,
+            width: "100%",
+            closeOnSelect: false,
+            dropdownParent: filtersForm
+        });
+
+        const firstNationalitySelect = $("[name='firstNationalitySelect']");
+        rows = runQuery(db, `
+            select distinct primera_nacionalitat
+            from ive_cat
+        `);
+
+        rows.forEach(row => {
+            firstNationalitySelect.append(`<option value="${row.primera_nacionalitat}">${row.primera_nacionalitat}</option>`);
+        });
+
+        firstNationalitySelect.select2({
+            placeholder: "Selecciona primera nacionalitat",
+            allowClear: true,
+            width: "100%",
+            closeOnSelect: false,
+            dropdownParent: filtersForm
+        });
+
+
     } catch (err) {
         console.error("Error:", err);
     }
