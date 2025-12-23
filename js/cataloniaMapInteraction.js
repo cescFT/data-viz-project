@@ -1,3 +1,27 @@
+function loadCataloniaMapInteraction(map) {
+
+    // Estil general de les comarques
+    function styleComarques(feature) {
+        return {
+            fillColor: '#cccccc',
+            weight: 1,
+            color: '#555',
+            fillOpacity: 0.5
+        };
+    }
+
+
+    // Carregar el GeoJSON de comarques
+    fetch('../static-data/comarques_catalunya.geojson')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: styleComarques
+            }).addTo(map);
+        })
+        .catch(err => console.error('Error carregant GeoJSON comarques:', err));
+}
+
 async function executeFilters(map, filtersSelected) {
     try {
         $("#loadingResults").show();
