@@ -59,8 +59,12 @@ async function executeFilters(map, filtersSelected) {
             return;
         }
 
-        let firstElementTotal = rows[0].total;
         let lastElementTotal = rows[rows.length - 1].total;
+
+        let comarcaTotals = [];
+        rows.forEach(row => {
+            comarcaTotals[row.nom_comarca_residencia] = row.total;
+        });
 
         let mode = "intervals";
         if (lastElementTotal <= 10) mode =  "discrete";
