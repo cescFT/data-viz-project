@@ -257,21 +257,20 @@
         }
 
         const filtersSelected = {};
-        filtersSelected.years = agesSelected.map(item => item.id);
-        filtersSelected.centerType = centerTypeSelected.map(item => item.id);
-        filtersSelected.finantialType = finantialTypeSelected.map(item => item.id);
-        filtersSelected.ageGroupSelect = ageGroupSelected.map(item => item.id);
-        filtersSelected.situacioConvivenciaSelect = situacioConvivenciaSelected.map(item => item.id);
-        filtersSelected.sonsSelect = sonsSelected.map(item => item.id);
-        filtersSelected.sonsAlive = sonsAliveSelected.map(item => item.id);
-        filtersSelected.jobSituationSelect = jobSituationSelected.map(item => item.id);
-        filtersSelected.ingressosSelect = ingressosSelected.map(item => item.id);
-        filtersSelected.bornCountrySelect = bornCountrySelected.map(item => item.id);
-        filtersSelected.firstNationalitySelect = firstNationalitySelected.map(item => item.id);
+        filtersSelected.years = {"values": agesSelected.map(item => item.id), "field": "any"};
+        filtersSelected.centerType = {"values": centerTypeSelected.map(item => item.id), "field": "tipus_centre"};
+        filtersSelected.finantialType = {"values": finantialTypeSelected.map(item => item.id), "field": "financament_public"};
+        filtersSelected.ageGroupSelect = {"values": ageGroupSelected.map(item => item.id), "field": "grup_edat"};
+        filtersSelected.situacioConvivenciaSelect = {"values": situacioConvivenciaSelected.map(item => item.id), "field": "situacio_convivència"};
+        filtersSelected.sonsSelect = {"values": sonsSelected.map(item => item.id), "field": "fills_carrec"};
+        filtersSelected.sonsAlive = {"values": sonsAliveSelected.map(item => item.id), "field": "fills_vius"};
+        filtersSelected.jobSituationSelect = {"values": jobSituationSelected.map(item => item.id), "field": "situacio_laboral"};
+        filtersSelected.ingressosSelect = {"values": ingressosSelected.map(item => item.id), "field": "ingressos"};
+        filtersSelected.bornCountrySelect = {"values": bornCountrySelected.map(item => item.id), "field": "pais_naixement"};
+        filtersSelected.firstNationalitySelect = {"values": firstNationalitySelected.map(item => item.id), "field": "primera_nacionalitat"};
         console.log(filtersSelected);
 
-
-        executeFilters(map);
+        executeFilters(map, filtersSelected);
     });
 
 </script>
