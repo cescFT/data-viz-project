@@ -242,7 +242,20 @@
 
     $("body").on("click", "[data-action='submit']", function() {
         const agesSelected = $("[name='years']").select2('data');
-        console.log(agesSelected);
+        const centerTypeSelected = $("[name='centerType']").select2('data');
+        const finantialTypeSelected = $("[name='finantialType']").select2('data');
+        const ageGroupSelected = $("[name='ageGroupSelect']").select2('data'); 
+        const situacioConvivenciaSelected = $("[name='situacioConvivenciaSelect']").select2('data');
+        const sonsSelected = $("[name='sonsSelect']").select2('data');
+        const sonsAliveSelected = $("[name='sonsAlive']").select2('data');
+        const jobSituationSelected = $("[name='jobSituationSelect']").select2('data');
+        const ingressosSelected = $("[name='ingressosSelect']").select2('data');
+
+        console.log(agesSelected, centerTypeSelected, finantialTypeSelected, ageGroupSelected,
+            situacioConvivenciaSelected, sonsSelected, sonsAliveSelected,
+            jobSituationSelected, ingressosSelected);
+
+
         executeFilters(map);
     });
 
