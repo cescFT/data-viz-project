@@ -112,6 +112,11 @@ async function executeFilters(map, filtersSelected) {
         }).addTo(map);
 
         // ---------- LLEGENDA MIN–MAX ----------
+
+        if (legendControl) {
+            map.removeControl(legendControl);
+        }
+
         const legend = L.control({ position: "bottomright" });
 
         legend.onAdd = function () {
@@ -124,7 +129,7 @@ async function executeFilters(map, filtersSelected) {
 
             if (mode === "discrete") {
                 div.innerHTML = `
-                    <strong>Total</strong><br>
+                    <strong>Casos</strong><br>
                     <div><span style="background:#e0e0e0"></span> 0</div>
                     <div><span style="background:#cfe8ff"></span> 1</div>
                     <div><span style="background:#9ecae1"></span> 2</div>
@@ -135,7 +140,7 @@ async function executeFilters(map, filtersSelected) {
                 const maxColor = getIntervalColor(max, min, max);
 
                 div.innerHTML = `
-                    <strong>Total</strong><br>
+                    <strong>Casos</strong><br>
                     <div style="
                         height: 12px;
                         margin: 6px 0;
@@ -152,6 +157,7 @@ async function executeFilters(map, filtersSelected) {
         };
 
         legend.addTo(map);
+        legendControl = legend;
 
         $("#loadingResults").hide();
         $("#catMap").show();
