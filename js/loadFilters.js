@@ -229,6 +229,24 @@ async function loadFilters() {
             dropdownParent: filtersForm
         });
 
+        const methodUsedSelect = $("[name='methodUsedSelect']");
+        rows = runQuery(db, `
+            select distinct metode
+            from ive_cat
+        `);
+
+        rows.forEach(row => {
+            methodUsedSelect.append(`<option value="${row.metode}">${row.metode}</option>`);
+        });
+
+        methodUsedSelect.select2({
+            placeholder: "Selecciona mètode emprat",
+            allowClear: true,
+            width: "100%",
+            closeOnSelect: false,
+            dropdownParent: filtersForm
+        });
+
 
     } catch (err) {
         console.error("Error:", err);
