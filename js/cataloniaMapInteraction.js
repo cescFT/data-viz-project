@@ -27,30 +27,20 @@ async function executeFilters(map, filtersSelected) {
         $("#loadingResults").show();
         $("#catMap").hide();
 
-        let query = `
-            SELECT COUNT(*) as total, nom_comarca_residencia
-            FROM ive_cat
-            WHERE 1=1
-        `;
-
+        let query = `SELECT COUNT(*) as total, nom_comarca_residencia FROM ive_cat WHERE `;
+        let endQuery = ` GROUP BY nom_comarca_residencia ORDER BY total`;
+        
         let conditions = [];
-        for (const selectedValues of Object.values(filtersSelected)) {
-            let values = selectedValues[0];
-            let field = selectedValues[1];
-
-            if (values.length > 0) {
-                conditions.push(`${field} IN (${values.map(v => `'${v}'`).join(', ')})`);
-            }
+        for (const [filterName, selectedValues] of Object.entries(filtersSelected)) {
+            let objectData = Object.values(selectedValues);
+            if (objectData[0].length > 0) {
+                let field = objectData[1];
+                conditions.push(`${field} IN (${objectData[0].map(v => `'${v}'`).join(', ')})`); } 
         }
-
+                
         if (conditions.length > 0) {
-            query += " AND " + conditions.join(" AND ");
+            query += conditions.join(' AND ') + ' ' + endQuery;
         }
-
-        query += `
-            GROUP BY nom_comarca_residencia
-            ORDER BY total
-        `;
 
         const db = await loadSQLiteDatabase("../ive_cat.sqlite");
         const rows = runQuery(db, query);
