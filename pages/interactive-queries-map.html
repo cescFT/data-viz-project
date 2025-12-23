@@ -143,6 +143,8 @@
 
         <div id="catMap" style="width: 100%; height: 500px;" class="mb-4"></div>
 
+        <i class="fa fa-spinner fa-spin fa-4x text-center" id="loadingResults" style="display: none;"></i>
+
         <a href="https://cescft.github.io/data-viz-project/" class="btn btn-link">
             <i class="fa fa-arrow-left" aria-hidden="true"></i> Torna a la pàgina principal
         </a>
@@ -268,7 +270,6 @@
         filtersSelected.ingressosSelect = {"values": ingressosSelected.map(item => item.id), "field": "ingressos"};
         filtersSelected.bornCountrySelect = {"values": bornCountrySelected.map(item => item.id), "field": "pais_naixement"};
         filtersSelected.firstNationalitySelect = {"values": firstNationalitySelected.map(item => item.id), "field": "primera_nacionalitat"};
-        console.log(filtersSelected);
 
         executeFilters(map, filtersSelected);
     });
