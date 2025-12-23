@@ -35,7 +35,7 @@ async function executeFilters(map, filtersSelected) {
             let objectData = Object.values(selectedValues);
             if (objectData[0].length > 0) {
                 let field = objectData[1];
-                conditions.push(`${field} IN (${objectData[0].map(v => `'${v}'`).join(', ')})`); } 
+                conditions.push(`${field} IN (${objectData[0].map(v => `'${v.replace("'", "\'")}'`).join(', ')})`); } 
         }
                 
         if (conditions.length > 0) {
