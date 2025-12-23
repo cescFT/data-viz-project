@@ -69,88 +69,65 @@
 
         <div class="mb-4">
             <form name="filters" class="p-3 border rounded bg-light">
-
                 <div class="row g-3">
-
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Anys</label>
-                            <select name="years" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Anys</label>
+                        <select name="years" class="form-select" multiple></select>
                     </div>
 
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Tipus de centre</label>
-                            <select name="centerType" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Tipus de centre</label>
+                        <select name="centerType" class="form-select" multiple></select>
                     </div>
 
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Tipus de finançament</label>
-                            <select name="finantialType" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Tipus de finançament</label>
+                        <select name="finantialType" class="form-select" multiple></select>
                     </div>
 
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Grup d'edat</label>
-                            <select name="ageGroupSelect" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Grup d'edat</label>
+                        <select name="ageGroupSelect" class="form-select" multiple></select>
                     </div>
-
                 </div>
-
-                <div class="row g-3 mt-1">
-
-                    <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Situació de convivència</label>
-                            <select name="situacioConvivenciaSelect" class="form-select" multiple></select>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Nombre de fills a càrrec</label>
-                            <select name="sonsSelect" class="form-select" multiple></select>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Nombre de fills vius</label>
-                            <select name="sonsAlive" class="form-select" multiple></select>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Situació laboral</label>
-                            <select name="jobSituationSelect" class="form-select" multiple></select>
-                        </div>
-                    </div>
-
-                </div>
-
                 <div class="row g-3 mt-1">
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Ingressos mensuals</label>
-                            <select name="ingressosSelect" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Situació de convivència</label>
+                        <select name="situacioConvivenciaSelect" class="form-select" multiple></select>
                     </div>
+
                     <div class="col-12 col-md-3">
-                        <div class="mb-1">
-                            <label class="form-label d-block">Pais de naixement</label>
-                            <select name="bornCountrySelect" class="form-select" multiple></select>
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label d-block">Primera nacionalitat</label>
-                            <select name="firstNationalitySelect" class="form-select" multiple></select>
-                        </div>
+                        <label class="form-label d-block">Nombre de fills a càrrec</label>
+                        <select name="sonsSelect" class="form-select" multiple></select>
                     </div>
+
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">Nombre de fills vius</label>
+                        <select name="sonsAlive" class="form-select" multiple></select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">Situació laboral</label>
+                        <select name="jobSituationSelect" class="form-select" multiple></select>
+                    </div>
+                </div>
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">Ingressos mensuals</label>
+                        <select name="ingressosSelect" class="form-select" multiple></select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">País de naixement</label>
+                        <select name="bornCountrySelect" class="form-select" multiple></select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">Primera nacionalitat</label>
+                        <select name="firstNationalitySelect" class="form-select" multiple></select>
+                    </div>
+
+                    <div class="col-12 col-md-3"></div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">
@@ -160,6 +137,7 @@
                 </div>
 
             </form>
+
         </div>
 
 
@@ -278,8 +256,19 @@
                 return;
         }
 
-        console.log("Executing filters...");
-        console.log(agesSelected[0]);
+        const filtersSelected = {};
+        filtersSelected.years = agesSelected.map(item => item.id);
+        filtersSelected.centerType = centerTypeSelected.map(item => item.id);
+        filtersSelected.finantialType = finantialTypeSelected.map(item => item.id);
+        filtersSelected.ageGroupSelect = ageGroupSelected.map(item => item.id);
+        filtersSelected.situacioConvivenciaSelect = situacioConvivenciaSelected.map(item => item.id);
+        filtersSelected.sonsSelect = sonsSelected.map(item => item.id);
+        filtersSelected.sonsAlive = sonsAliveSelected.map(item => item.id);
+        filtersSelected.jobSituationSelect = jobSituationSelected.map(item => item.id);
+        filtersSelected.ingressosSelect = ingressosSelected.map(item => item.id);
+        filtersSelected.bornCountrySelect = bornCountrySelected.map(item => item.id);
+        filtersSelected.firstNationalitySelect = firstNationalitySelected.map(item => item.id);
+        console.log(filtersSelected);
 
 
         executeFilters(map);
