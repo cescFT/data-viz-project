@@ -59,7 +59,9 @@ async function executeFilters(map, filtersSelected) {
             return;
         }
 
+        let min = rows[0].total;
         let lastElementTotal = rows[rows.length - 1].total;
+        let max = lastElementTotal;
 
         let comarcaTotals = [];
         rows.forEach(row => {
