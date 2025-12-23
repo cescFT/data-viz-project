@@ -127,7 +127,10 @@
                         <select name="firstNationalitySelect" class="form-select" multiple></select>
                     </div>
 
-                    <div class="col-12 col-md-3"></div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label d-block">Mètode emprat</label>
+                        <select name="methodUsedSelect" class="form-select" multiple></select>
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">
@@ -259,6 +262,7 @@
         const ingressosSelected = $("[name='ingressosSelect']").select2('data');
         const bornCountrySelected = $("[name='bornCountrySelect']").select2('data');
         const firstNationalitySelected = $("[name='firstNationalitySelect']").select2('data');
+        const methodUsedSelected = $("[name='methodUsedSelect']").select2('data');
 
         if (agesSelected.length == 0 &&
             centerTypeSelected.length == 0 &&
@@ -270,7 +274,9 @@
             jobSituationSelected.length == 0 &&
             ingressosSelected.length == 0 &&
             bornCountrySelected.length == 0 &&
-            firstNationalitySelected.length == 0) {
+            firstNationalitySelected.length == 0 &&
+            methodUsedSelected.length == 0
+        ) {
                 alert("Si us plau, selecciona almenys un filtre per realitzar la cerca.");
                 return;
         }
@@ -287,6 +293,7 @@
         filtersSelected.ingressosSelect = {"values": ingressosSelected.map(item => item.id), "field": "ingressos"};
         filtersSelected.bornCountrySelect = {"values": bornCountrySelected.map(item => item.id), "field": "pais_naixement"};
         filtersSelected.firstNationalitySelect = {"values": firstNationalitySelected.map(item => item.id), "field": "primera_nacionalitat"};
+        filtersSelected.methodUsedSelect = {"values": methodUsedSelected.map(item => item.id), "field": "metode"};
 
         executeFilters(map, filtersSelected);
     });
