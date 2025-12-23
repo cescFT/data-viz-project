@@ -50,6 +50,7 @@ async function executeFilters(map, filtersSelected) {
             loadCataloniaMapInteraction(map);
             $("#loadingResults").hide();
             $("#catMap").show();
+
             return;
         }
 
