@@ -35,7 +35,8 @@ async function executeFilters(map, filtersSelected) {
             let objectData = Object.values(selectedValues);
             if (objectData[0].length > 0) {
                 let field = objectData[1];
-                conditions.push(`${field} IN (${objectData[0].map(v => `'${v.replace("'", "''")}'`).join(', ')})`); } 
+                conditions.push(`${field} IN (${objectData[0].map(v => `'${v.replace("'", "''")}'`).join(', ')})`);
+            } 
         }
                 
         if (conditions.length > 0) {
@@ -155,13 +156,30 @@ async function executeFilters(map, filtersSelected) {
             div.style.minWidth = "140px";
 
             if (mode === "discrete") {
-                div.innerHTML = `
-                    <strong>Casos</strong><br>
-                    <div><span style="background:#e0e0e0"></span> 0</div>
-                    <div><span style="background:#cfe8ff"></span> 1</div>
-                    <div><span style="background:#9ecae1"></span> 2</div>
-                    <div><span style="background:#2171b5"></span> ≥3</div>
-                `;
+                // Llegenda dinàmica segons valors existents
+                const values = Object.values(comarcaTotals).filter(v => v > 0);
+                const uniqueValues = Array.from(new Set(values)).sort((a, b) => a - b);
+
+                const getColor = v => {
+                    if (v === 1) return "#cfe8ff";
+                    if (v === 2) return "#9ecae1";
+                    if (v >= 3) return "#2171b5";
+                    return "#e0e0e0";
+                };
+
+                let html = `<strong>Casos</strong><br>`;
+                html += `<div><span style="background:#e0e0e0"></span> 0</div>`;
+
+                uniqueValues.forEach(v => {
+                    if (v <= 2) html += `<div><span style="background:${getColor(v)}"></span> ${v}</div>`;
+                });
+
+                if (uniqueValues.some(v => v >= 3)) {
+                    html += `<div><span style="background:#2171b5"></span> ≥3</div>`;
+                }
+
+                div.innerHTML = html;
+
             } else {
                 const minColor = getIntervalColor(min, min, max);
                 const maxColor = getIntervalColor(max, min, max);
