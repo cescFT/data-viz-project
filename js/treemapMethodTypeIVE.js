@@ -21,7 +21,6 @@ function treemapMethodTypeIVE(colorMap) {
             svg.selectAll("*").remove();
 
             const tooltip = d3.select("#treemapTooltipIVEMethodType");
-            const containerRect = svg.node().parentNode.getBoundingClientRect();
 
             /* ---------------------------
                Llegenda interactiva
@@ -43,27 +42,22 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("opacity", 1)
                 .on("click", function (event, d) {
 
-                    // Toggle selecció
                     if (activeTypes.has(d.label)) {
                         activeTypes.delete(d.label);
                     } else {
                         activeTypes.add(d.label);
                     }
 
-                    // Si no hi ha cap seleccionat → mostra tot
-                    if (activeTypes.size === 0) {
-                        activeTypes = new Set();
-                    }
+                    if (activeTypes.size === 0) activeTypes = new Set();
 
-                    // Actualitzar opacitat i border
                     legendItem.each(function(ld) {
                         const rect = d3.select(this).select("rect");
                         if (activeTypes.size === 0) {
                             d3.select(this).attr("opacity", 1);
-                            rect.attr("stroke-width", 0); // sense border
+                            rect.attr("stroke-width", 0);
                         } else {
                             d3.select(this).attr("opacity", activeTypes.has(ld.label) ? 1 : 0.3);
-                            rect.attr("stroke-width", activeTypes.has(ld.label) ? 2 : 0); // border només als seleccionats
+                            rect.attr("stroke-width", activeTypes.has(ld.label) ? 2 : 0);
                         }
                     });
 
@@ -77,7 +71,7 @@ function treemapMethodTypeIVE(colorMap) {
                 .attr("ry", 2)
                 .attr("fill", d => d.color)
                 .attr("stroke", "#000")
-                .attr("stroke-width", 0); // inicialment sense border
+                .attr("stroke-width", 0);
 
             legendItem.append("text")
                 .attr("x", 22)
@@ -152,9 +146,24 @@ function treemapMethodTypeIVE(colorMap) {
                             `);
                     })
                     .on("mousemove", function (event) {
+                        // Tooltip intel·ligent dins del div parent
+                        const parent = d3.select(this.closest("svg")).node().parentNode;
+                        const rect = parent.getBoundingClientRect();
+
+                        let x = event.clientX - rect.left + 10;
+                        let y = event.clientY - rect.top + 10;
+
+                        // Limitar perquè no surti fora del div
+                        const tooltipNode = tooltip.node();
+                        const tooltipWidth = tooltipNode.offsetWidth;
+                        const tooltipHeight = tooltipNode.offsetHeight;
+
+                        if (x + tooltipWidth > rect.width) x = rect.width - tooltipWidth - 5;
+                        if (y + tooltipHeight > rect.height) y = rect.height - tooltipHeight - 5;
+
                         tooltip
-                            .style("left", (event.clientX - containerRect.left + 10) + "px")
-                            .style("top", (event.clientY - containerRect.top + 10) + "px");
+                            .style("left", x + "px")
+                            .style("top", y + "px");
                     })
                     .on("mouseout", function () {
                         d3.select(this)
