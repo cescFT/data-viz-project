@@ -24,4 +24,5 @@ A part, he creat alguna columna extra en l'única taula disponible en la base de
 * Per a donar interactivitat amb la pàgina, he usat la llibreria jquery.js.
 * Per a donar-li estil he usat bootstrap5.
 * Per a posar icones he usat la llibreria font-awesome.
-* Per a poder fer el mapa he necessitat les comarques de catalunya en format geojson, disponibles [https://github.com/aariste/GeoJSON-Mapas](aqui)
+* Per a poder fer el mapa he necessitat les comarques de catalunya en format geojson, disponibles [aqui (https://github.com/aariste/GeoJSON-Mapas)][aqui].
+
