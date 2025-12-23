@@ -113,7 +113,7 @@
 
                     <div class="col-12 col-md-3">
                         <div class="mb-1">
-                            <label class="form-label d-block">Nombre de fills</label>
+                            <label class="form-label d-block">Nombre de fills a càrrec</label>
                             <select name="sonsSelect" class="form-select" multiple></select>
                         </div>
                     </div>
@@ -139,6 +139,16 @@
                         <div class="mb-1">
                             <label class="form-label d-block">Ingressos mensuals</label>
                             <select name="ingressosSelect" class="form-select" multiple></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="mb-1">
+                            <label class="form-label d-block">Pais de naixement</label>
+                            <select name="bornCountrySelect" class="form-select" multiple></select>
+                        </div>
+                        <div class="mb-1">
+                            <label class="form-label d-block">Primera nacionalitat</label>
+                            <select name="firstNationalitySelect" class="form-select" multiple></select>
                         </div>
                     </div>
                 </div>
@@ -250,10 +260,26 @@
         const sonsAliveSelected = $("[name='sonsAlive']").select2('data');
         const jobSituationSelected = $("[name='jobSituationSelect']").select2('data');
         const ingressosSelected = $("[name='ingressosSelect']").select2('data');
+        const bornCountrySelected = $("[name='bornCountrySelect']").select2('data');
+        const firstNationalitySelected = $("[name='firstNationalitySelect']").select2('data');
 
-        console.log(agesSelected, centerTypeSelected, finantialTypeSelected, ageGroupSelected,
-            situacioConvivenciaSelected, sonsSelected, sonsAliveSelected,
-            jobSituationSelected, ingressosSelected);
+        if (agesSelected.length == 0 &&
+            centerTypeSelected.length == 0 &&
+            finantialTypeSelected.length == 0 &&
+            ageGroupSelected.length == 0 &&
+            situacioConvivenciaSelected.length == 0 &&
+            sonsSelected.length == 0 &&
+            sonsAliveSelected.length == 0 &&
+            jobSituationSelected.length == 0 &&
+            ingressosSelected.length == 0 &&
+            bornCountrySelected.length == 0 &&
+            firstNationalitySelected.length == 0) {
+                alert("Si us plau, selecciona almenys un filtre per realitzar la cerca.");
+                return;
+        }
+
+        console.log("Executing filters...");
+        console.log(agesSelected[0]);
 
 
         executeFilters(map);
