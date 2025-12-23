@@ -71,8 +71,22 @@ async function loadFilters() {
 
         const filterAgeGroup = $("[name='ageGroupSelect']");
 
-        rows.forEach(row => {
-            filterAgeGroup.append(`<option value="${row.grup_edat}">${row.grup_edat}</option>`);
+        let ageGroups = [];
+
+        for (let i = 0; i < rows.length; i++) {
+            let groupYear = rows[i].grup_edat;
+            const match = groupYear.match(/\b\d{1,2}\b/);
+            const firstNumber = match ? match[0] : null;
+
+            ageGroups.push({
+                original: groupYear,
+                number: firstNumber ? parseInt(firstNumber) : Infinity
+            });
+        }
+
+        ageGroups.sort((a, b) => a.number - b.number);
+        ageGroups.forEach(row => {
+            filterAgeGroup.append(`<option value="${row.original}">${row.original}</option>`);
         });
 
         filterAgeGroup.select2({

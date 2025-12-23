@@ -36,13 +36,24 @@ function styleComarcaTest(nomComarca) {
 }
 
 
-function executeFilters(map) {
+async function executeFilters(map, filtersSelected) {
+    try {
 
-    //TODO: passar els filtres executant la query
+        let query = `SELECT COUNT(*) as total, nom_comarca_residencia
+                    FROM ive_cat
+                    WHERE `;
+
+        let endQuery = `GROUP BY nom_comarca_residencia
+            ORDER BY total`; 
 
 
+        let conditions = [];
+        for (const [filterName, selectedValues] of Object.entries(filtersSelected)) {
+            let objectData = Object.values(selectedValues);
+            console.log(objectData)
+        }
 
-    fetch('../static-data/comarques_catalunya.geojson')
+        fetch('../static-data/comarques_catalunya.geojson')
         .then(response => response.json())
         .then(data => {
             L.geoJSON(data, {
@@ -50,4 +61,9 @@ function executeFilters(map) {
             }).addTo(map);
         })
         .catch(err => console.error('Error carregant GeoJSON comarques:', err));
+
+    } catch (error) {
+        console.error('Error executant els filtres:', error);
+    }
+
 }
